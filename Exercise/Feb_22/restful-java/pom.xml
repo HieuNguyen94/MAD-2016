@@ -64,7 +64,7 @@
                 <version>7.4.Final</version>
                 <configuration>
                     <force>true</force>
-                    <targetDir>E:/REPOSITORIES/MAD-2016/Exercise/Jan_20/restful-java/target</targetDir>
+                    <targetDir>E:/REPOSITORIES/MAD-2016/Exercise/Feb_22/restful-java/target</targetDir>
                     <filename>restful-java-0.1.war</filename>
                 </configuration>                    
             </plugin>
