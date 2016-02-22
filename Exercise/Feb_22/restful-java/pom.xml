@@ -58,7 +58,7 @@
 
     <build>
         <plugins>
-            <plugin>
+<!--            <plugin>
                 <groupId>org.jboss.as.plugins</groupId>
                 <artifactId>jboss-as-maven-plugin</artifactId>
                 <version>7.4.Final</version>
@@ -67,7 +67,7 @@
                     <targetDir>E:/REPOSITORIES/MAD-2016/Exercise/Feb_22/restful-java/target</targetDir>
                     <filename>restful-java-0.1.war</filename>
                 </configuration>                    
-            </plugin>
+            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
