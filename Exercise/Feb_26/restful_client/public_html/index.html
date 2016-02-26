@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>        
+        <title>This is a restful client</title>
+        <script src = "https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"> </script>        
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">                        
+        <script>    
+        $(document).ready(function(){                
+                console.log("ready");
+                $.ajax({
+                    url: "http://localhost:8080/restful/user/all",
+                    method: "GET",
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    beforeSend: function(xhr){
+                        xhr.setRequestHeader('Authorization', 'Basic ' + btoa("admin:admin"));
+                    }
+                }).done(function(data){
+                    $.each(data, function(index, value){
+                        $("#users").append("User " + (index + 1).toString() + ": ");                          
+                        $("#users").append(value.username + "</br>");
+                        $("#users").append(value.email + "</br>");
+                    })
+                });
+            });            
+        </script>
+    </head>
+    <body>
+        <h1>This is a tragedy</h1>
+        <div id = "users"></div>        
+    </body>
+</html>
