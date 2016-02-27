@@ -6,34 +6,104 @@ and open the template in the editor.
 -->
 <html>
     <head>        
-        <title>This is a restful client</title>
-        <script src = "https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"> </script>        
+        <title>This is a restful client</title>        
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">                        
-        <script>    
-        $(document).ready(function(){                
-                console.log("ready");
-                $.ajax({
-                    url: "http://localhost:8080/restful/user/all",
-                    method: "GET",
-                    xhrFields: {
-                        withCredentials: true
-                    },
-                    beforeSend: function(xhr){
-                        xhr.setRequestHeader('Authorization', 'Basic ' + btoa("admin:admin"));
-                    }
-                }).done(function(data){
-                    $.each(data, function(index, value){
-                        $("#users").append("User " + (index + 1).toString() + ": ");                          
-                        $("#users").append(value.username + "</br>");
-                        $("#users").append(value.email + "</br>");
-                    })
-                });
-            });            
-        </script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+        <link href="css/bootstrap.min.css" rel="stylesheet"/>
+        <link href="css/style.css" rel="stylesheet"/>
     </head>
     <body>
-        <h1>This is a tragedy</h1>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand " href="#" id="appname">Demo App</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <form class="navbar-form navbar-right" role="search">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Search">
+                        </div>
+                        <button type="submit" class="btn btn-default">Search</button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+        <div class="panel panel-primary" style='width: 80%; margin: 0 auto;'>
+            <div class="panel-heading "><strong>User List</strong></div>
+            <div class="panel-body" id="user-list" style='padding: 20px;'>
+            </div>
+        </div>
+
+        <!--Form Template-->
+        <form class="form-inline form-template" style="display: none">
+            <div class="form-group no" style='width: 30px; padding-right: 5px;'>#1</div>
+            <div class="form-group" style='padding-right: 20px;'>
+                <label>Username</label>
+                <input type="text" class="form-control name" placeholder="Jane Doe" disabled="true">
+            </div>
+            <div class="form-group" style="padding-right: 20px;">
+                <label >Email</label>
+                <input type="email" class="form-control email" disabled="true">
+            </div>
+            <button type="button" class="btn btn-default detail-button" data-toggle="modal" data-target="#myModal">Details</button>
+        </form>
+        <!--Template separator-->
+        <div class="sep" style="width: 100%; height: 1px; border-top: 1px solid #aeaeae; margin: 10px 0; display: none; box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.5) "></div>
+      
+        <!--Template dialog-->
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Detailed Information</h4>
+                    </div>
+                    <div class="modal-body" style='padding:10px 50px;'>
+                        <div style="">
+                            <div style="display: inline-block; padding: 10px; width: 20%"><strong>id:</strong></div>
+                            <div style="padding: 10px; display: inline-block; width: 70%" class='id'>hieunguyen94</div>
+                        </div>
+                        <div style="">
+                            <div style="display: inline-block; padding: 10px; width: 20%"><strong>username:</strong></div>
+                            <div style="padding: 10px; display: inline-block; width: 70%" class='username'>hieunguyen94</div>
+                        </div>
+                        <div style="">
+                            <div style="display: inline-block; padding: 10px; width: 20%"><strong>password:</strong></div>
+                            <div style="padding: 10px; display: inline-block; width: 70%" class='password'>hieunguyen94</div>
+                        </div>
+                        <div style="">
+                            <div style="display: inline-block; padding: 10px; width: 20%"><strong>email:</strong></div>
+                            <div style="padding: 10px; display: inline-block; width: 70%" class='email'>hieunguyen94</div>
+                        </div>
+                        <div style="">
+                            <div style="display: inline-block; padding: 10px; width: 20%"><strong>status:</strong></div>
+                            <div style="padding: 10px; display: inline-block; width: 70%" class='status'>hieunguyen94</div>
+                        </div>
+                        <div style="">
+                            <div style="display: inline-block; padding: 10px; width: 20%"><strong>name:</strong></div>
+                            <div style="padding: 10px; display: inline-block; width: 70%" class='name'>hieunguyen94</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div id = "users"></div>        
+        <script src = "js/jquery.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/main.js"></script>
+
     </body>
 </html>

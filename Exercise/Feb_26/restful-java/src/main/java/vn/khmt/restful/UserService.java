@@ -106,8 +106,12 @@ public class UserService {
                     username = result.getString("username");
                     email = result.getString("email");
                     User user =  new User();
+                    user.setId(Integer.parseInt(result.getString("id")));
                     user.setUsername(username);
+                    user.setPassword(result.getString("password"));
                     user.setEmail(email);
+                    user.setStatus(result.getString("status"));
+                    user.setName(result.getString("name"));
                     users.add(user);                                                
                 }
             } catch (SQLException ex) {
