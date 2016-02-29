@@ -7,13 +7,11 @@ package vn.khmt.restful;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.json.Json;
 import javax.json.JsonObject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -27,7 +25,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import jdk.nashorn.internal.parser.JSONParser;
 import vn.khmt.db.ConnectToSQL;
 
 /**
@@ -102,18 +99,19 @@ public class UserService {
             String username = "";
             String email = "";                        
             try {
-                while (result.next()) {                
-                    username = result.getString("username");
-                    email = result.getString("email");
-                    User user =  new User();
-                    user.setId(Integer.parseInt(result.getString("id")));
-                    user.setUsername(username);
-                    user.setPassword(result.getString("password"));
-                    user.setEmail(email);
-                    user.setStatus(result.getString("status"));
-                    user.setName(result.getString("name"));
-                    users.add(user);                                                
+                do{
+                     username = result.getString("username");
+                     email = result.getString("email");
+                     User user =  new User();
+                     user.setId(Integer.parseInt(result.getString("id")));
+                     user.setUsername(username);
+                     user.setPassword(result.getString("password"));
+                     user.setEmail(email);
+                     user.setStatus(result.getString("status"));
+                     user.setName(result.getString("name"));
+                     users.add(user);                                                    
                 }
+                while (result.next());
             } catch (SQLException ex) {
                 Logger.getLogger(UserService.class.getName()).log(Level.SEVERE, null, ex);
             }                  
