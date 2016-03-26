@@ -181,4 +181,18 @@ public class UserService {
         return Response.status(Response.Status.UNAUTHORIZED).entity("Username exists").build();               
     }
     
+    @POST
+    @Path("/checkemail")
+    @Consumes({MediaType.APPLICATION_JSON})
+    public Response checkEmail(JsonObject msgBody) {
+        
+        String email = msgBody.getString("email");                
+
+        if (database.checkEmail(email)) {                                                
+            return Response.status(Response.Status.OK).entity("OK").build();            
+        }
+        
+        return Response.status(Response.Status.UNAUTHORIZED).entity("Email exists").build();               
+    }
+    
 }

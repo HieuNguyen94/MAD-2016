@@ -181,6 +181,24 @@ public class ConnectToSQL {
         return true;
     }
     
+    public boolean checkEmail(String email) {
+        try {
+            String SQL = "SELECT email FROM public.user";
+            Statement stmt = this.dbConnection.createStatement();
+            ResultSet rs = stmt.executeQuery(SQL);
+            
+            // Iterate through the data in the result set and display it.  
+            while (rs.next()) {
+                if (rs.getString("email").equals(email)){
+                    return false;
+                }
+            }
+        } catch (SQLException sqle) {
+            System.err.println(sqle.getMessage());
+        } 
+        return true;
+    }
+    
     public String checkUser(String username, String password) {
         try {
             if (username != null && password != null) {
