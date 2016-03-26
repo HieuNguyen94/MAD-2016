@@ -1,0 +1,9 @@
+=== mad-ass1-march-2016 Config Vars
+postgres://fqwsjkzcltggbh:ekCZ_XgNomkrUbEufK-JjHwtDN@ec2-54-83-56-177.compute-1.amazonaws.com:5432/de13q0g083tfgb
+====================================================================
+username: fqwsjkzcltggbh
+pass: ekCZ_XgNomkrUbEufK-JjHwtDN
+host: ec2-54-83-56-177.compute-1.amazonaws.com
+port: 5432
+db name: de13q0g083tfgb
+sslmode: require
