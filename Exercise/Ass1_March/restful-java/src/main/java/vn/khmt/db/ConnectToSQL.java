@@ -160,15 +160,24 @@ public class ConnectToSQL {
         } catch (SQLException sqle) {
             System.err.println(sqle.getMessage());
         } 
-//        finally {
-//            if (this.dbConnection != null) {
-//                try {
-//                    this.dbConnection.close();
-//                } catch (SQLException sqle) {
-//                    System.err.println(sqle.getMessage());
-//                }
-//            }
-//        }
+        return true;
+    }
+    
+    public boolean checkUsername(String username) {
+        try {
+            String SQL = "SELECT username FROM public.user";
+            Statement stmt = this.dbConnection.createStatement();
+            ResultSet rs = stmt.executeQuery(SQL);
+            
+            // Iterate through the data in the result set and display it.  
+            while (rs.next()) {
+                if (rs.getString("username").equals(username)){
+                    return false;
+                }
+            }
+        } catch (SQLException sqle) {
+            System.err.println(sqle.getMessage());
+        } 
         return true;
     }
     

@@ -167,4 +167,18 @@ public class UserService {
         return Response.status(Response.Status.UNAUTHORIZED).entity("Login Failed").build();               
     }
     
+    @POST
+    @Path("/checkusername")
+    @Consumes({MediaType.APPLICATION_JSON})
+    public Response checkUsername(JsonObject msgBody) {
+        
+        String username = msgBody.getString("username");                
+
+        if (database.checkUsername(username)) {                                                
+            return Response.status(Response.Status.OK).entity("OK").build();            
+        }
+        
+        return Response.status(Response.Status.UNAUTHORIZED).entity("Username exists").build();               
+    }
+    
 }
