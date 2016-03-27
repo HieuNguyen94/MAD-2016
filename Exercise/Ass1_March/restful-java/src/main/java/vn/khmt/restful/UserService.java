@@ -151,6 +151,26 @@ public class UserService {
         
         return Response.status(Response.Status.OK).entity("N").build();               
     }
+    
+    @POST
+    @Path("/createsimple")
+    @Consumes({MediaType.APPLICATION_JSON})
+    public Response createUserSimple(JsonObject msgBody) {
+        
+        String username = msgBody.getString("username");
+        String password = msgBody.getString("password");   
+
+        if (database.checkUsername(username)) {
+            System.out.println("Create done");
+            String query = "INSERT INTO public.user(id, username, password) " + "SELECT MAX(t.id) + 1" + ",'" + username + "', '" + password  + "' FROM public.user t;";
+            boolean res = database.executeSQL(query);
+            if (res) {
+                return Response.status(Response.Status.OK).entity("Y").build();
+            }
+        }
+        
+        return Response.status(Response.Status.OK).entity("N").build();               
+    }
 
     @POST
     @Path("/login")
