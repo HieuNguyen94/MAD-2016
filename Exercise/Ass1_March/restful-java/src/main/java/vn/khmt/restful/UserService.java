@@ -161,10 +161,10 @@ public class UserService {
         String password = msgBody.getString("password");        
 
         if (database.accountExist(username, password)) {                                                
-            return Response.status(Response.Status.OK).entity("Login Successfully").build();            
+            return Response.status(Response.Status.OK).entity("OK").build();            
         }
         
-        return Response.status(Response.Status.UNAUTHORIZED).entity("Login Failed").build();               
+        return Response.status(Response.Status.UNAUTHORIZED).entity("FAILED").build();               
     }
     
     @POST
