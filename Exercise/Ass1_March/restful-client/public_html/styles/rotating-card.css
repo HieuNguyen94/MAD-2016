@@ -1,5 +1,4 @@
 body {
-	margin-top: 60px;
 	font-size: 14px;
 	font-family: "Helvetica Nueue",Arial,Verdana,sans-serif;
 	background-color: #E5E9ED;
@@ -16,6 +15,7 @@ body {
      -o-perspective: 800px;
         perspective: 800px;
         margin-bottom: 30px;
+        transition: all 0.2s;
 }
 /* flip the pane when hovered */
 .card-container:not(.manual-flip):hover .card,
@@ -288,4 +288,8 @@ body {
         z-index: 5;
         visibility: visible;
     }
+}
+
+.card-container:hover {
+    box-shadow: 0 0 20px 0px rgba(0, 0, 0, 0.5);
 }

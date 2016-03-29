@@ -105,9 +105,95 @@
                 $(this).attr('data-title', linkTitle);
             });
         });
-        
-        
+        var DATA_STRUCTURE = {
+            "COVER_BACKGROUND_URL": "coverBackgroundUrl",
+            "PROFILE_IMAGE_URL": "avatar",
+            "NAME": "name",
+            "PROFESSION": "profession",
+            "ADDRESS": "address",
+            "COMPANY": "company",
+            "EMAIL": "email"
+        },
+        CARD_TEMPLATE = "cardTemplate";
+        var $cardList = $(".card-list");
+        var cardMarkup = '<div class="col-md-4 col-sm-6">'
+                + '<div class="card-container manual-flip">'
+                + '<div class="card">'
+                + '<div class="front">'
+                + '<div class="cover">'
+                + '<img src="${coverBackgroundUrl}"/>'
+                + '</div>'
+                + '<div class="user">'
+                + '<img class="img-circle" src="${avatar}"/>'
+                + '</div>'
+                + '<div class="content">'
+                + '<div class="main">'
+                + '<h3 class="name">${name}</h3>'
+                + '<p class="profession">${profession}</p>'
+                + '<h5><i class="fa fa-map-marker fa-fw text-muted"></i> ${address}</h5>'
+                + '<h5><i class="fa fa-building-o fa-fw text-muted"></i> ${company}</h5>'
+                + '<h5><i class="fa fa-envelope-o fa-fw text-muted"></i> ${email}</h5>'
+                + '</div>'
+                + '<div class="footer">'
+                + '<button class="btn btn-simple rotate-btn">'
+                + '<i class="fa fa-mail-forward"></i> Edit Information'
+                + '</button>'
+                + '</div>'
+                + '</div>'
+                + '</div> <!-- end front panel -->'
+                + '</div> <!-- end card -->'
+                + '</div> <!-- end card-container -->'
+                + '</div> <!-- end col sm 3 -->';
+        $.template(CARD_TEMPLATE, cardMarkup);
+        var preloader = new $.materialPreloader({
+            position: 'bottom',
+            height: '7px',
+            col_1: '#4285F4',
+            col_2: '#EA4335',
+            col_3: '#FBBC05',
+            col_4: '#34A853',
+            fadeIn: 50,
+            fadeOut: 300
+        });
         $(".rotate-btn").click(editHandler);
-        function editHandler(){}// TODO
+        function editHandler() {}// TODO
+        function loadAllUser() {
+            preloader.on();
+            $.ajax({
+                url: "http://localhost:8080/restful/user/all",
+                method: "GET",
+                xhrFields: {
+                    withCredentials: true
+                },
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Authorization', 'Basic ' + btoa("admin:admin"));
+                }
+            }).done(function (data) {
+                generateCard(data);
+            }).fail(function (error) {
+                console.error(error);
+            }).always(function () {
+                preloader.off();
+            });
+        }
+        
+        function generateCard(cardList) {
+            var size = cardList.length;
+            for (var i = 0; i < size; i++) {
+                addCard(cardList[i]);
+            }
+        }
+        function addCard(cardData) {
+            // Filter data if necessary
+            cardData[DATA_STRUCTURE.COVER_BACKGROUND_URL] = cardData[DATA_STRUCTURE.COVER_BACKGROUND_URL] || "images/rotating_card_thumb.png";
+            cardData[DATA_STRUCTURE.PROFILE_IMAGE_URL] = cardData[DATA_STRUCTURE.PROFILE_IMAGE_URL] || "images/rotating_card_profile2.png";
+            cardData[DATA_STRUCTURE.NAME] = cardData[DATA_STRUCTURE.NAME] || "Andrew Mike";
+            cardData[DATA_STRUCTURE.PROFESSION] = cardData[DATA_STRUCTURE.PROFESSION] || "Web Developer";
+            cardData[DATA_STRUCTURE.ADDRESS] = cardData[DATA_STRUCTURE.ADDRESS] || "Bucharest, Romania";
+            cardData[DATA_STRUCTURE.COMPANY] = cardData[DATA_STRUCTURE.COMPANY] || "Bucharest, Romania";
+            cardData[DATA_STRUCTURE.EMAIL] = cardData[DATA_STRUCTURE.EMAIL] || "mike@creative-tim.com";
+            $.tmpl(CARD_TEMPLATE, cardData).appendTo($cardList);
+        }
+        loadAllUser();
     });
 })(jQuery);
