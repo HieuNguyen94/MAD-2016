@@ -179,10 +179,12 @@
                 }
             }).done(function () {
                 console.info("Edit successfully");
-                $('#editmodel').modal('hide')
+                $('#editmodel').modal('hide');
+                swal("Your modification has been saved successfully");
 
             }).fail(function (error) {
                 console.error(error);
+                swal("Somthing wrong happens, please try again!");
             }).always(function () {
                 preloader.off();
             });
@@ -205,6 +207,7 @@
                 generateCard(data);
             }).fail(function (error) {
                 console.error(error);
+                swal("Somthing wrong happens, please try again!");
             }).always(function () {
                 preloader.off();
             });
@@ -229,8 +232,10 @@
                 }
             }).done(function () {
                 console.info("Create successfully");
+                swal("Create new user successfully");
             }).fail(function (error) {
                 console.error(error);
+                swal("Somthing wrong happens, please try again!");
             }).always(function () {
                 preloader.off();
                 $('#createmodel').modal('hide')
