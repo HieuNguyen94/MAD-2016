@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.json.JsonObject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
@@ -311,4 +312,28 @@ public class UserService {
         return Response.status(Response.Status.UNAUTHORIZED).entity("Email exists").build();               
     }
     
+    @PUT
+    @Path("/deluser")
+    @Consumes({MediaType.APPLICATION_JSON})
+    public Response delUser(@HeaderParam("Authorization") String auth, JsonObject msgBody) {
+
+        byte[] authBytes = Base64.getDecoder().decode(auth.substring(6));
+        String authString[] = new String(authBytes).split(":");
+
+        if (database.isAdmin(authString[0], authString[1])) {
+            String username = msgBody.getString("username");
+            
+            String query = "DELETE FROM public.user WHERE username = '" + username + "';";
+
+            boolean res = database.executeSQL(query);
+            if (res) {
+                return Response.status(Response.Status.OK).entity("Y").build();
+            }   
+            else{
+                return Response.status(Response.Status.OK).entity("N").build();
+            }
+        } else {
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Only admin can view this information").build();
+        }
+    }
 }
