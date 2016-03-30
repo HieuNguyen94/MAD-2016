@@ -78,9 +78,9 @@ public class UserService {
     }
 
     @GET
-    @Path("/all")
+    @Path("/all-old")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getUserList(@HeaderParam("Authorization") String auth) {
+    public Response getUserListOld(@HeaderParam("Authorization") String auth) {
 
         byte[] authBytes = Base64.getDecoder().decode(auth.substring(6));
         String authString[] = new String(authBytes).split(":");
@@ -112,11 +112,40 @@ public class UserService {
             return Response.status(Response.Status.UNAUTHORIZED).entity("Only admin can view this information").build();
         }
     }
+    
+    @GET
+    @Path("/all")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getUserList() {       
+        
+        List users = new ArrayList<User>();
+        ResultSet result = database.getAllUsers();            
+        try {
+            do {                                        
+                User user = new User();
+                user.setId(Integer.parseInt(result.getString("id")));
+                user.setUsername(result.getString("username"));
+                user.setEmail(result.getString("email"));
+                user.setPassword(result.getString("password"));                    
+                user.setPriority(result.getInt("priority"));
+                user.setName(result.getString("name"));
+                user.setAvatar(result.getString("avatar"));
+                users.add(user);
+            } while (result.next());
+        } catch (SQLException ex) {
+            Logger.getLogger(UserService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        GenericEntity<List<User>> entity = new GenericEntity<List<User>>(users) {
+        };
+
+        return Response.status(Response.Status.OK).entity(entity).build();        
+    }
 
     @PUT
     @Path("/rename")
     @Consumes({MediaType.APPLICATION_JSON})
-    public Response updateUsername(@PathParam("param") int id, JsonObject msgBody) {
+    public Response updateUsernameOld(@PathParam("param") int id, JsonObject msgBody) {
 
         String name = msgBody.getString("name");
         String username = msgBody.getString("username");
@@ -126,6 +155,73 @@ public class UserService {
             return Response.status(Response.Status.OK).entity("Update Successfully").build();
         } else {
             return Response.status(Response.Status.NOT_ACCEPTABLE).entity("Update Not Successfully").build();
+        }
+    }
+    
+    @PUT
+    @Path("/updateinfo")
+    @Consumes({MediaType.APPLICATION_JSON})
+    public Response updateUsername(@HeaderParam("Authorization") String auth, JsonObject msgBody) {
+
+        byte[] authBytes = Base64.getDecoder().decode(auth.substring(6));
+        String authString[] = new String(authBytes).split(":");
+        
+        if (database.isAdmin(authString[0], authString[1])){
+            String username = msgBody.getString("username"); 
+            
+            String name = msgBody.getString("name");    
+            String email = msgBody.getString("email");
+            String priority = msgBody.getString("priority");
+            String password = msgBody.getString("password");
+            String avatar = msgBody.getString("avatar");
+            
+            String query;
+            boolean res;
+            
+            if (!name.equals("")){
+                query = "UPDATE public.user SET name = '" + name + "' WHERE username = '" + username + "';";
+                res = database.executeSQL(query);
+                if (!res) {                            
+                    return Response.status(Response.Status.NOT_ACCEPTABLE).entity("Update Not Successfully").build();
+                }
+            }
+            
+            if ((!email.equals("") && database.checkEmail(email))){
+                query = "UPDATE public.user SET email = '" + email + "' WHERE username = '" + username + "';";
+                res = database.executeSQL(query);
+                if (!res) {                            
+                    return Response.status(Response.Status.NOT_ACCEPTABLE).entity("Update Not Successfully").build();
+                }
+            }
+            
+            if (!password.equals("")){
+                query = "UPDATE public.user SET password = '" + password + "' WHERE username = '" + username + "';";
+                res = database.executeSQL(query);
+                if (!res) {                            
+                    return Response.status(Response.Status.NOT_ACCEPTABLE).entity("Update Not Successfully").build();
+                }
+            }
+            
+            if (!avatar.equals("")){
+                query = "UPDATE public.user SET avatar = '" + avatar + "' WHERE username = '" + username + "';";
+                res = database.executeSQL(query);
+                if (!res) {                            
+                    return Response.status(Response.Status.NOT_ACCEPTABLE).entity("Update Not Successfully").build();
+                }
+            }
+            
+            if (!priority.equals("")){
+                query = "UPDATE public.user SET priority = '" + priority + "' WHERE username = '" + username + "';";
+                res = database.executeSQL(query);
+                if (!res) {                            
+                    return Response.status(Response.Status.NOT_ACCEPTABLE).entity("Update Not Successfully").build();
+                }
+            }
+            
+            return Response.status(Response.Status.OK).entity("Update Successfully").build();
+        }
+        else{
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Only admin can edit this information").build(); 
         }
     }
 

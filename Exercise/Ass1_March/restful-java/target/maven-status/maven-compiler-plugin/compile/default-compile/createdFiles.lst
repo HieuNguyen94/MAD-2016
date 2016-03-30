@@ -3,5 +3,6 @@ vn\khmt\restful\User.class
 org\netbeans\rest\application\config\ApplicationConfig.class
 vn\khmt\restful\UserService$1.class
 vn\khmt\restful\UserService.class
+vn\khmt\restful\UserService$2.class
 vn\khmt\db\ConnectToSQL.class
 vn\khmt\restful\CORSFilter.class

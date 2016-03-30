@@ -14,7 +14,7 @@
         var settings = $.extend({}, defaults, options);
         $template =
             "<div id='materialPreloader' class='load-bar' style='height:" +
-            settings.height + ";display:none;" + settings.position +
+            settings.height + ";display:none; posisiont: relative; z-index:9999;" + settings.position +
             ":0px'><div class='load-bar-container'><div class='load-bar-base base1' style='background:" +
             settings.col_1 +
             "'><div class='color red' style='background:" + settings.col_2 +

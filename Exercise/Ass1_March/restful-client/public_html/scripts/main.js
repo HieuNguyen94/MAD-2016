@@ -138,7 +138,7 @@
                 + '<h5><i class="fa fa-envelope-o fa-fw text-muted"></i> ${email}</h5>'
                 + '</div>'
                 + '<div class="footer">'
-                + '<button class="btn btn-simple rotate-btn"  data-toggle="modal" data-target="#createnew">'
+                + '<button class="btn btn-simple rotate-btn"  data-toggle="modal" data-target="#editmodel">'
                 + '<i class="fa fa-mail-forward"></i> Edit Information'
                 + '</button>'
                 + '</div>'
@@ -161,11 +161,31 @@
         $(".card-list").on("click", "button", function () {
             var userIndex = $(this).parents(".li").index();
             if (userList !== null && userList.length > 0) {
-                fillEditForm(userList[userIndex]);
+                setEditForm(userList[userIndex]);
             }
         });
-        $("#save-btn").click(function() {
-            
+        $("#save-btn").click(function () {
+            preloader.on();
+            $.ajax({
+                url: "http://localhost:8080/restful/user/updateinfo",
+                method: "PUT",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(getEditForm()),
+                xhrFields: {
+                    withCredentials: true
+                },
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Authorization', 'Basic ' + btoa("admin:admin"));
+                }
+            }).done(function () {
+                console.info("Edit successfully");
+                $('#editmodel').modal('hide')
+
+            }).fail(function (error) {
+                console.error(error);
+            }).always(function () {
+                preloader.off();
+            });
         });
         $(".rotate-btn").click(editHandler);
         function editHandler() {}// TODO
@@ -190,6 +210,63 @@
             });
         }
 
+        $("#nav-createuser").click(function (e) {
+            e.preventDefault();
+        });
+        // Create new user
+        $("#create-btn").click(function () {
+            preloader.on();
+            $.ajax({
+                url: "http://localhost:8080/restful/user/create",
+                method: "POST",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(getCreateForm()),
+                xhrFields: {
+                    withCredentials: true
+                },
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Authorization', 'Basic ' + btoa("admin:admin"));
+                }
+            }).done(function () {
+                console.info("Create successfully");
+            }).fail(function (error) {
+                console.error(error);
+            }).always(function () {
+                preloader.off();
+                $('#createmodel').modal('hide')
+            });
+        });
+        // Location stuff
+        $("#nav-location").click(function (e) {
+            e.preventDefault();
+            $("#teste").css("display", "block");
+            $("#teste").css("z-index", "9999");
+
+            initMap();
+        });
+        $("#nav-location").animatedModal({
+            modalTarget: 'teste',
+            animatedIn: 'bounceInUp',
+            animatedOut: 'bounceOutDown',
+            color: '#39BEB9',
+            animationDuration: '.5s',
+            beforeOpen: function () {
+                var children = $(".thumb");
+                var index = 0;
+
+                function addClassNextChild() {
+                    if (index === children.length)
+                        return;
+                    children.eq(index++).show().velocity("transition.slideUpIn", {opacity: 1, stagger: 450, defaultDuration: 100});
+                    window.setTimeout(addClassNextChild, 100);
+                }
+                addClassNextChild();
+
+            },
+            afterClose: function () {
+                $(".thumb").hide();
+            }
+        });
         function generateCard(cardList) {
             var size = cardList.length;
             for (var i = 0; i < size; i++) {
@@ -207,7 +284,7 @@
             cardData[DATA_STRUCTURE.EMAIL] = cardData[DATA_STRUCTURE.EMAIL] || "mike@creative-tim.com";
             $.tmpl(CARD_TEMPLATE, cardData).appendTo($cardList);
         }
-        function fillEditForm(data) {
+        function setEditForm(data) {
             $("#inputName").val(data[DATA_STRUCTURE.NAME]);
             $("#inputProfession").val(data[DATA_STRUCTURE.PROFESSION]);
             $("#inputAddress").val(data[DATA_STRUCTURE.ADDRESS]);
@@ -216,6 +293,83 @@
             $("#inputUsername").val(data[DATA_STRUCTURE.USERNAME]);
             $("#inputPassword").val(data[DATA_STRUCTURE.PASSWORD]);
         }
+        function getEditForm() {
+            return {
+                "name": $("#inputName").val(),
+                "profession": $("#inputProfession").val(),
+                "address": $("#inputAddress").val(),
+                "company": $("#inputCompany").val(),
+                "email": $("#inputEmail").val(),
+                "username": $("#inputUsername").val(),
+                "password": $("#inputPassword").val(),
+                "priority": "", //TODO: add user priority
+                "avatar": ""
+            };
+        }
+        function getCreateForm() {
+            return {
+                "name": $("#inputNamec").val(),
+                "profession": $("#inputProfessionc").val(),
+                "address": $("#inputAddressc").val(),
+                "company": $("#inputCompanyc").val(),
+                "email": $("#inputEmailc").val(),
+                "username": $("#inputUsernamec").val(),
+                "password": $("#inputPasswordc").val(),
+                "priority": "", //TODO: add user priority
+                "avatar": ""
+            };
+        }
+
+//        Location stuff
+        function initMap() {
+            console.log("init map");
+            var myLatLng = {lat: 10.78, lng: 106.65};
+            map = new google.maps.Map(document.getElementById('modal-container'), {
+                zoom: 12,
+                center: myLatLng
+            });
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (pos) {
+                    locateOnMap(pos);
+                }, function (errMsg) {
+                    console.log(JSON.stringify(errMsg));
+                    navigator.geolocation.getCurrentPosition(function (pos) {
+                        locateOnMap(pos);
+                    }, function (errMsg) {
+                        console.log(JSON.stringify(errMsg));
+                    }, {
+                        enableHighAccuracy: true,
+                        timeout: 6 * 1000 * 2,
+                        maximumAge: 1000 * 60 * 10
+                    });
+                }, {
+                    enableHighAccuracy: false,
+                    timeout: 6 * 1000,
+                    maximumAge: 1000 * 60 * 10
+                });
+            } else {
+                alert("Do not support Geolocation");
+            }
+        }
+
+        function locateOnMap(pos) {
+            $("#lonlat").val(pos.coords.latitude + ";" + pos.coords.longitude);
+            var lonlat = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+            var marker = new google.maps.Marker({
+                position: lonlat,
+                map: map,
+                draggable: true,
+                animation: google.maps.Animation.DROP,
+                title: "Di chuyển để xác định đúng vị trí"
+            });
+            map.setCenter(lonlat);
+            map.setZoom(15);
+            google.maps.event.addListener(marker, "dragend", function (event) {
+                $("#lonlat").val(event.latLng.lat() + ';' + event.latLng.lng());
+            });
+        }
+
         loadAllUser();
     });
 })(jQuery);
