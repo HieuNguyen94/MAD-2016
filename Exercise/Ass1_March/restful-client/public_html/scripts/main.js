@@ -180,14 +180,49 @@
             }).done(function () {
                 console.info("Edit successfully");
                 $('#editmodel').modal('hide');
+                preloader.off();
                 swal("Your modification has been saved successfully");
-
+                reload();
             }).fail(function (error) {
                 console.error(error);
+                preloader.off();
                 swal("Somthing wrong happens, please try again!");
             }).always(function () {
-                preloader.off();
             });
+        });
+        $("#del-btn").click(function () {
+            console.info("click delete");
+            swal({title: "Are you sure? Think twice!", text: "You will not be able to undo this action", type: "warning", showCancelButton: true, confirmButtonColor: "#DD6B55", confirmButtonText: "Yes, delete it!", cancelButtonText: "Cancel", closeOnConfirm: false, closeOnCancel: false},
+                    function (isConfirm) {
+                        if (isConfirm) {
+                            del();
+                        } else {
+                            swal("Cancelled", "This user will not be removed", "error");
+                        }
+                    });
+            function del() {
+                preloader.on();
+                $.ajax({
+                    url: "http://localhost:8080/restful/user/deluser",
+                    method: "PUT",
+                    contentType: "application/json; charset=utf-8",
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('Authorization', 'Basic ' + btoa("admin:admin"));
+                    },
+                    data: JSON.stringify(getEditForm())
+                }).done(function () {
+                    $('#editmodel').modal('hide');
+                    swal("Delete user successfully");
+                }).fail(function (error) {
+                    console.error(error);
+                    swal("Somthing wrong happens, please try again!");
+                }).always(function () {
+                    preloader.off();
+                });
+            }
         });
         $(".rotate-btn").click(editHandler);
         function editHandler() {}// TODO
@@ -216,6 +251,11 @@
         $("#nav-createuser").click(function (e) {
             e.preventDefault();
         });
+        $("#nav-home").click(function (e) {
+            e.preventDefault();
+            console.log("home click");
+            reload();
+        });
         // Create new user
         $("#create-btn").click(function () {
             preloader.on();
@@ -232,12 +272,14 @@
                 }
             }).done(function () {
                 console.info("Create successfully");
+                preloader.off();
                 swal("Create new user successfully");
+                reload();
             }).fail(function (error) {
                 console.error(error);
+                preloader.off();
                 swal("Somthing wrong happens, please try again!");
             }).always(function () {
-                preloader.off();
                 $('#createmodel').modal('hide')
             });
         });
@@ -374,7 +416,10 @@
                 $("#lonlat").val(event.latLng.lat() + ';' + event.latLng.lng());
             });
         }
-
+        function reload() {
+            $cardList.html("");
+            loadAllUser();
+        }
         loadAllUser();
     });
 })(jQuery);
