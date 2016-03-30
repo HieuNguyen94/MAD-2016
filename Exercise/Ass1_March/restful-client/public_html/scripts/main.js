@@ -112,11 +112,14 @@
             "PROFESSION": "profession",
             "ADDRESS": "address",
             "COMPANY": "company",
-            "EMAIL": "email"
+            "EMAIL": "email",
+            "PASSWORD": "password",
+            "USERNAME": "username"
         },
         CARD_TEMPLATE = "cardTemplate";
-        var $cardList = $(".card-list");
-        var cardMarkup = '<div class="col-md-4 col-sm-6">'
+        var $cardList = $(".card-list"),
+                userList = null;
+        var cardMarkup = '<div class="col-md-4 col-sm-6 li">'
                 + '<div class="card-container manual-flip">'
                 + '<div class="card">'
                 + '<div class="front">'
@@ -135,7 +138,7 @@
                 + '<h5><i class="fa fa-envelope-o fa-fw text-muted"></i> ${email}</h5>'
                 + '</div>'
                 + '<div class="footer">'
-                + '<button class="btn btn-simple rotate-btn">'
+                + '<button class="btn btn-simple rotate-btn"  data-toggle="modal" data-target="#createnew">'
                 + '<i class="fa fa-mail-forward"></i> Edit Information'
                 + '</button>'
                 + '</div>'
@@ -155,6 +158,15 @@
             fadeIn: 50,
             fadeOut: 300
         });
+        $(".card-list").on("click", "button", function () {
+            var userIndex = $(this).parents(".li").index();
+            if (userList !== null && userList.length > 0) {
+                fillEditForm(userList[userIndex]);
+            }
+        });
+        $("#save-btn").click(function() {
+            
+        });
         $(".rotate-btn").click(editHandler);
         function editHandler() {}// TODO
         function loadAllUser() {
@@ -169,6 +181,7 @@
                     xhr.setRequestHeader('Authorization', 'Basic ' + btoa("admin:admin"));
                 }
             }).done(function (data) {
+                userList = data;
                 generateCard(data);
             }).fail(function (error) {
                 console.error(error);
@@ -176,7 +189,7 @@
                 preloader.off();
             });
         }
-        
+
         function generateCard(cardList) {
             var size = cardList.length;
             for (var i = 0; i < size; i++) {
@@ -193,6 +206,15 @@
             cardData[DATA_STRUCTURE.COMPANY] = cardData[DATA_STRUCTURE.COMPANY] || "Bucharest, Romania";
             cardData[DATA_STRUCTURE.EMAIL] = cardData[DATA_STRUCTURE.EMAIL] || "mike@creative-tim.com";
             $.tmpl(CARD_TEMPLATE, cardData).appendTo($cardList);
+        }
+        function fillEditForm(data) {
+            $("#inputName").val(data[DATA_STRUCTURE.NAME]);
+            $("#inputProfession").val(data[DATA_STRUCTURE.PROFESSION]);
+            $("#inputAddress").val(data[DATA_STRUCTURE.ADDRESS]);
+            $("#inputCompany").val(data[DATA_STRUCTURE.COMPANY]);
+            $("#inputEmail").val(data[DATA_STRUCTURE.EMAIL]);
+            $("#inputUsername").val(data[DATA_STRUCTURE.USERNAME]);
+            $("#inputPassword").val(data[DATA_STRUCTURE.PASSWORD]);
         }
         loadAllUser();
     });

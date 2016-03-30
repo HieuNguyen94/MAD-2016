@@ -29,6 +29,73 @@ and open the template in the editor.
 
         </div>
 
+        <!--Edit model BEGIN-->
+        <div class="modal fade" id="createnew" role="dialog">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Edit Information</h4>
+                    </div>
+                    <div class="modal-body" style='padding:10px 50px;'>
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <label for="inputName" class="col-sm-2 control-label">Name</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="inputName" placeholder="Name">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputProfession" class="col-sm-2 control-label">Profession</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="inputProfession" placeholder="Profession">
+                                </div>
+                            </div>
+                             <div class="form-group">
+                                <label for="inputAddress" class="col-sm-2 control-label">Address</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="inputAddress" placeholder="Address">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputCompany" class="col-sm-2 control-label">Company</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="inputCompany" placeholder="Company">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputEmail" class="col-sm-2 control-label">Email</label>
+                                <div class="col-sm-10">
+                                    <input type="email" class="form-control" id="inputEmail" placeholder="Email">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputUsername" class="col-sm-2 control-label">Username</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="inputUsername" placeholder="Username" disabled>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputPassword" class="col-sm-2 control-label">Password</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="inputPassword" placeholder="Password">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <button type="button" class="btn btn-default" id="edit-btn">Save</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Edit model END-->
+
         <script src="scripts/libs/jquery-1.9.1.min.js"></script>
         <script src="scripts/libs/jquery.tmpl.min.js"></script>
         <script src="scripts/libs/bootstrap.min.js"></script>
