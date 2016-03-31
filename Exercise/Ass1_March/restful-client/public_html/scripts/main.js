@@ -105,6 +105,8 @@
                 $(this).attr('data-title', linkTitle);
             });
         });
+        
+        $("#username").text(sessionStorage.getItem("username"));
         var DATA_STRUCTURE = {
             "COVER_BACKGROUND_URL": "coverBackgroundUrl",
             "PROFILE_IMAGE_URL": "avatar",
@@ -192,6 +194,10 @@
             });
         });
         $("#del-btn").click(function () {
+            if (getEditForm().username === $("#username").text()) {
+                swal({title: "You can not delete yourself", type: "error"})
+                return;
+            }
             console.info("click delete");
             swal({title: "Are you sure? Think twice!", text: "You will not be able to undo this action", type: "warning", showCancelButton: true, confirmButtonColor: "#DD6B55", confirmButtonText: "Yes, delete it!", cancelButtonText: "Cancel", closeOnConfirm: false, closeOnCancel: false},
                     function (isConfirm) {

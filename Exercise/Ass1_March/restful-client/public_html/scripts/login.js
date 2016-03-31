@@ -61,6 +61,7 @@
             }).done(function (data) {
                 if (data === STATUS_OK) {
                     console.log("Login successful");
+                    sessionStorage.setItem("username", username);
                     window.location.href = "main.html";
                 } else {
                     console.log("Login failed");
@@ -81,6 +82,7 @@
             }).done(function (data) {
                 console.info("Send OK " + "data");
                 window.location.href = "main.html";
+                sessionStorage.setItem("username", username);
             }).fail(function (error) {
                 console.error(error);
             }).always(function () {
