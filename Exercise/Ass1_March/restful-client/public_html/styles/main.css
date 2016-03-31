@@ -238,7 +238,7 @@ body {
     border-radius: 50px;
     background: url("../images/rotating_card_profile.png");
     background-repeat: no-repeat;
-    background-size: contain;
+    background-size: cover;
     cursor: pointer;
 }
 .avatar-picker label{
