@@ -18,6 +18,9 @@ public class User {
     private int priority;        
     private String name;
     private String avatar;
+    private String profession;
+    private String address;
+    private String company;
 
     public User(){
         this.id = 0;
@@ -125,6 +128,48 @@ public class User {
      */
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    /**
+     * @return the profession
+     */
+    public String getProfession() {
+        return profession;
+    }
+
+    /**
+     * @param profession the profession to set
+     */
+    public void setProfession(String profession) {
+        this.profession = profession;
+    }
+
+    /**
+     * @return the address
+     */
+    public String getAddress() {
+        return address;
+    }
+
+    /**
+     * @param address the address to set
+     */
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    /**
+     * @return the company
+     */
+    public String getCompany() {
+        return company;
+    }
+
+    /**
+     * @param company the company to set
+     */
+    public void setCompany(String company) {
+        this.company = company;
     }
        
 }

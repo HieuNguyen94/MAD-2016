@@ -131,6 +131,9 @@ public class UserService {
                 user.setPriority(result.getInt("priority"));
                 user.setName(result.getString("name"));
                 user.setAvatar(result.getString("avatar"));
+                user.setProfession(result.getString("profession"));
+                user.setAddress(result.getString("address"));
+                user.setCompany(result.getString("company"));
                 users.add(user);
             } while (result.next());
         } catch (SQLException ex) {
