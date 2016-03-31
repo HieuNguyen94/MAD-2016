@@ -175,6 +175,9 @@ public class UserService {
             String priority = msgBody.getString("priority");
             String password = msgBody.getString("password");
             String avatar = msgBody.getString("avatar");
+            String profession = msgBody.getString("profession");
+            String address = msgBody.getString("address");
+            String company = msgBody.getString("company");
             
             String query;
             boolean res;
@@ -219,6 +222,30 @@ public class UserService {
                 }
             }
             
+            if (!profession.equals("")){
+                query = "UPDATE public.user SET profession = '" + profession + "' WHERE username = '" + username + "';";
+                res = database.executeSQL(query);
+                if (!res) {                            
+                    return Response.status(Response.Status.NOT_ACCEPTABLE).entity("Update Not Successfully").build();
+                }
+            }
+            
+            if (!address.equals("")){
+                query = "UPDATE public.user SET address = '" + address + "' WHERE username = '" + username + "';";
+                res = database.executeSQL(query);
+                if (!res) {                            
+                    return Response.status(Response.Status.NOT_ACCEPTABLE).entity("Update Not Successfully").build();
+                }
+            }
+            
+            if (!company.equals("")){
+                query = "UPDATE public.user SET company = '" + company + "' WHERE username = '" + username + "';";
+                res = database.executeSQL(query);
+                if (!res) {                            
+                    return Response.status(Response.Status.NOT_ACCEPTABLE).entity("Update Not Successfully").build();
+                }
+            }
+            
             return Response.status(Response.Status.OK).entity("Update Successfully").build();
         }
         else{
@@ -236,10 +263,15 @@ public class UserService {
         String email = msgBody.getString("email");
         String name = msgBody.getString("name");
         String avatar = msgBody.getString("avatar");
+        String profession = msgBody.getString("profession");
+        String address = msgBody.getString("address");
+        String company = msgBody.getString("company");
 
         if (database.createVerify(username, email)) {
             System.out.println("Create done");
-            String query = "INSERT INTO public.user(id, username, password, email, priority, name, avatar) " + "SELECT MAX(t.id) + 1" + ",'" + username + "', '" + password + "','" + email + "'," + 2 + ",'" + name + "','" + avatar + "' FROM public.user t;";
+            String query = "INSERT INTO public.user(id, username, password, email, priority, name, avatar, profession, address, company) " + 
+                    "SELECT MAX(t.id) + 1" + ",'" + username + "', '" + password + "','" + email + "'," + 2 + ",'" + name + "','" + avatar + "','" 
+                    + profession + "','" + address + "','" + company + "' FROM public.user t;";
             boolean res = database.executeSQL(query);
             if (res) {
                 return Response.status(Response.Status.OK).entity("Y").build();
@@ -333,7 +365,7 @@ public class UserService {
                 return Response.status(Response.Status.OK).entity("N").build();
             }
         } else {
-            return Response.status(Response.Status.UNAUTHORIZED).entity("Only admin can view this information").build();
+            return Response.status(Response.Status.UNAUTHORIZED).entity("Only admin can do this").build();
         }
     }
 }
