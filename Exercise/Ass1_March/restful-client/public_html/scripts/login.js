@@ -46,7 +46,11 @@
                     rConfirmPassword = $("#RRepeatPassword").val();
 
             if (rPassword !== rConfirmPassword) {
-                // TODO show alert or something
+                swal("Your password does not match, please try again");
+                $("#RPassword").val("");
+                $("#RRepeatPassword").val("");
+            } else if (rPassword === "" || rConfirmPassword === "") {
+                swal("Please fill out all these fields");
             } else {
                 registerHandler(rUsername, rUsername);
             }
@@ -63,6 +67,7 @@
                 if (data === STATUS_OK) {
                     console.log("Login successful");
                     sessionStorage.setItem("username", username);
+                    sessionStorage.setItem("password", password);
                     window.location.href = "main.html";
                 } else {
                     console.log("Login failed");
@@ -86,6 +91,7 @@
                 console.info("Send OK " + "data");
                 window.location.href = "main.html";
                 sessionStorage.setItem("username", username);
+                sessionStorage.setItem("password", password);
             }).fail(function (error) {
                 console.error(error);
                 swal({title: "Someting wrong happened", text: "Maybe your password does not match or this username already existed!"});
