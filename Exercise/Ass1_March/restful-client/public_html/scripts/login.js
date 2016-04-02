@@ -54,9 +54,10 @@
         function loginHandler(username, password) {
             preloader.on();
             $.ajax({
-                url: "http://localhost:8080/restful/user/login",
+                url: "https://mad-ass1-2016.herokuapp.com/user/login",                
                 type: "POST",
-                contentType: "application/json; charset=utf-8",
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",                
                 data: JSON.stringify({"username": username, "password": password})
             }).done(function (data) {
                 if (data === STATUS_OK) {
@@ -75,8 +76,9 @@
         function registerHandler(username, password) {
             preloader.on();
             $.ajax({
-                url: "http://localhost:8080/restful/user/createsimple",
+                url: "https://mad-ass1-2016.herokuapp.com/user/createsimple",
                 type: "POST",
+                dataType: 'json',
                 contentType: "application/json; charset=utf-8",
                 data: JSON.stringify({"username": username, "password": password})
             }).done(function (data) {
