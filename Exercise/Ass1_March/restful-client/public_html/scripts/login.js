@@ -54,10 +54,10 @@
         function loginHandler(username, password) {
             preloader.on();
             $.ajax({
-                url: "https://mad-ass1-2016.herokuapp.com/user/login",                
+                url: "https://mad-ass1-2016.herokuapp.com/user/login",
                 type: "POST",
-                dataType: 'json',
-                contentType: "application/json; charset=utf-8",                
+                dataType: 'text',
+                contentType: "application/json; charset=utf-8",
                 data: JSON.stringify({"username": username, "password": password})
             }).done(function (data) {
                 if (data === STATUS_OK) {
@@ -69,6 +69,7 @@
                 }
             }).fail(function (error) {
                 console.error(error);
+                swal({title: "Someting wrong happened", text: "Maybe your username or password is incorrect!"});
             }).always(function () {
                 preloader.off();
             });
@@ -78,7 +79,7 @@
             $.ajax({
                 url: "https://mad-ass1-2016.herokuapp.com/user/createsimple",
                 type: "POST",
-                dataType: 'json',
+                dataType: 'text',
                 contentType: "application/json; charset=utf-8",
                 data: JSON.stringify({"username": username, "password": password})
             }).done(function (data) {
@@ -87,6 +88,7 @@
                 sessionStorage.setItem("username", username);
             }).fail(function (error) {
                 console.error(error);
+                swal({title: "Someting wrong happened", text: "Maybe your password does not match or this username already existed!"});
             }).always(function () {
                 preloader.off();
             });

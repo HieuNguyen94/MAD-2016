@@ -178,11 +178,11 @@
             $.ajax({
                 url: "https://mad-ass1-2016.herokuapp.com/user/updateinfo",
                 type: "PUT",
-                dataType: "json",                
+                dataType: "text",
                 contentType: "application/json",
                 data: JSON.stringify(getEditForm()),
                 beforeSend: function (xhr) {
-                    xhr.setRequestHeader('Authorization', 'Basic ' + btoa("admin:admin"));                    
+                    xhr.setRequestHeader('Authorization', 'Basic ' + btoa("admin:admin"));
                 }
             }).done(function () {
                 console.info("Edit successfully");
@@ -216,7 +216,7 @@
                 $.ajax({
                     url: "https://mad-ass1-2016.herokuapp.com/user/deluser",
                     method: "PUT",
-                    dataType: 'jsonp',
+                    dataType: 'text',
                     contentType: "application/json; charset=utf-8",
                     xhrFields: {
                         withCredentials: true
@@ -227,6 +227,7 @@
                     data: JSON.stringify(getEditForm())
                 }).done(function () {
                     $('#editmodel').modal('hide');
+                    preloader.off();
                     swal("Delete user successfully");
                     reload();
                 }).fail(function (error) {
@@ -277,7 +278,7 @@
                 url: "https://mad-ass1-2016.herokuapp.com/user/create",
                 method: "POST",
                 contentType: "application/json; charset=utf-8",
-                dataType: 'jsonp',
+                dataType: 'text',
                 data: JSON.stringify(getCreateForm()),
                 xhrFields: {
                     withCredentials: true
@@ -366,7 +367,7 @@
                 profession: $("#inputProfession").val() || "",
                 address: $("#inputAddress").val() || "",
                 company: $("#inputCompany").val() || "",
-               email: $("#inputEmail").val() || "",
+                email: $("#inputEmail").val() || "",
                 username: $("#inputUsername").val() || "",
                 password: $("#inputPassword").val() || "",
                 priority: $("#inputPriority").val() || "", //TODO: add user priority
