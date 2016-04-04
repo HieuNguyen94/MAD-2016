@@ -1,0 +1,1 @@
+Use WS deployed from Assignment 1: http://mad-ass1-2016.herokuapp.com/
