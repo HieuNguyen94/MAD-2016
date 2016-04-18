@@ -4,6 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -27,7 +29,6 @@ public class LogInActivity extends AppCompatActivity {
     private final String WS_URL = Util.WS_LOGIN_URL;
     private EditText usernameET;
     private EditText passwordET;
-    private Button loginBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +36,7 @@ public class LogInActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         usernameET = (EditText) findViewById(R.id.username);
         passwordET = (EditText) findViewById(R.id.password);
-        loginBtn = (Button) findViewById(R.id.login);
+        Button loginBtn = (Button) findViewById(R.id.login);
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,7 +72,7 @@ public class LogInActivity extends AppCompatActivity {
         private int result = -1;
         private String username = usernameET.getText().toString();
         private String password = passwordET.getText().toString();
-        private ProgressDialog dialog = new ProgressDialog(LogInActivity.this);
+        private ProgressDialog dialog = new ProgressDialog(LogInActivity.this, R.style.AppTheme_Dark_Dialog);
 
         @Override
         protected void onPreExecute() {
@@ -128,8 +129,6 @@ public class LogInActivity extends AppCompatActivity {
             else if (result ==0){
                 Toast.makeText(LogInActivity.this, "Wrong username or password", Toast.LENGTH_LONG).show();
             }
-
-
         }
     }
 }
