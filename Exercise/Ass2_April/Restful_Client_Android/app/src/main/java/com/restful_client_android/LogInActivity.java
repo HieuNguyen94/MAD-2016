@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -11,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,28 +30,27 @@ public class LogInActivity extends AppCompatActivity {
     private final String WS_URL = Util.WS_LOGIN_URL;
     private EditText usernameET;
     private EditText passwordET;
-    private Button loginBtn;
-    private TextView signupTV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.new_layout);
+        setContentView(R.layout.activity_login);
         usernameET = (EditText) findViewById(R.id.username);
         passwordET = (EditText) findViewById(R.id.password);
-        loginBtn = (Button) findViewById(R.id.login);
+        Button loginBtn = (Button) findViewById(R.id.login);
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (usernameET.getText().toString().equals("") || passwordET.getText().toString().equals("")){
+                if (usernameET.getText().toString().equals("") || passwordET.getText().toString().equals("")) {
+                    Snackbar.make(getWindow().getDecorView().getRootView(), "All fields are required", Snackbar.LENGTH_SHORT).show();
                     return;
                 }
                 new RequestWebService().execute(WS_URL);
             }
         });
-        signupTV = (TextView) findViewById(R.id.signup);
+        TextView signupTV = (TextView) findViewById(R.id.signup);
         signupTV.setClickable(true);
-        signupTV.setOnClickListener(new View.OnClickListener(){
+        signupTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(LogInActivity.this, SignUpActivity.class);
@@ -85,7 +86,7 @@ public class LogInActivity extends AppCompatActivity {
         private int result = -1;
         private String username = usernameET.getText().toString();
         private String password = passwordET.getText().toString();
-        private ProgressDialog dialog = new ProgressDialog(LogInActivity.this);
+        private ProgressDialog dialog = new ProgressDialog(LogInActivity.this, R.style.AppTheme_Dark_Dialog);
 
         @Override
         protected void onPreExecute() {
