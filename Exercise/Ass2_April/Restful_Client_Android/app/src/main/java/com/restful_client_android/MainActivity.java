@@ -1,5 +1,6 @@
 package com.restful_client_android;
 
+import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -8,9 +9,13 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.github.amlcurran.showcaseview.targets.Target;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -29,11 +34,25 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+import com.tuesda.walker.circlerefresh.CircleRefreshLayout;
 
+import com.melnykov.fab.FloatingActionButton;
+import com.melnykov.fab.ObservableScrollView;
+import com.melnykov.fab.ScrollDirectionListener;
+
+//import com.github.amlcurran.showcaseview.R;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
+
+public class MainActivity extends AppCompatActivity {
+    private CircleRefreshLayout mRefreshLayout;
     private final String WS_URL = Util.WS_GET_ALL_URL;
     private TextView titleTV;
     private ListView usersListLV;
+    private RequestWebService requestWebService;
+    private boolean isFirstLoad = true;
+    FloatingActionButton fab;
+    ShowcaseView sv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +61,50 @@ public class MainActivity extends AppCompatActivity {
         titleTV = (TextView) findViewById(R.id.url);
         usersListLV = (ListView) findViewById(R.id.users_list);
         titleTV.setText("GET FROM " + WS_URL);
-        new RequestWebService().execute(WS_URL);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.attachToListView(usersListLV);
+        mRefreshLayout = (CircleRefreshLayout) findViewById(R.id.refresh_layout);
+        mRefreshLayout.setOnRefreshListener(new CircleRefreshLayout.OnCircleRefreshListener() {
+            @Override
+            public void refreshing() {
+                new RequestWebService().execute(WS_URL);
+//                usersListLV.setAdapter(null);
+            }
+
+            @Override
+            public void completeRefresh() {
+                // do something when refresh complete
+            }
+        });
+        requestWebService = new RequestWebService();
+        requestWebService.execute(WS_URL);
+
+        Target viewTarget = new ViewTarget(R.id.fab, this);
+        Button customButton = (Button) getLayoutInflater().inflate(R.layout.view_custom_button, null);
+        RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        param.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        param.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        sv = new ShowcaseView.Builder(this)
+                .withMaterialShowcase()
+                .setStyle(R.style.CustomShowcaseTheme)
+                .replaceEndButton(customButton)
+                .setTarget(viewTarget)
+                .setContentTitle("Why you're so hurry :)")
+                .setContentText("This feature is not available at this time")
+//                .singleShot(42)
+                .build();
+        sv.setButtonPosition(param);
+        sv.hide();
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (sv.isShown()) {
+                    sv.setStyle(com.github.amlcurran.showcaseview.R.style.ShowcaseView);
+                } else {
+                    sv.show();
+                }
+            }
+        });
     }
 
     @Override
@@ -70,12 +132,15 @@ public class MainActivity extends AppCompatActivity {
     private class RequestWebService extends AsyncTask<String, Void, Void> {
 
         private String jsonResponse;
-        private ProgressDialog dialog = new ProgressDialog(MainActivity.this);
+        private ProgressDialog dialog;
 
         @Override
         protected void onPreExecute() {
-            dialog.setMessage("Please wait for getting result");
-            dialog.show();
+            if (isFirstLoad){
+                dialog = new ProgressDialog(MainActivity.this);
+                dialog.setMessage("Please wait for getting result");
+                dialog.show();
+            }
         }
 
         @Override
@@ -114,8 +179,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             Gson gson = new Gson();
-            dialog.dismiss();
-            Type listType = new TypeToken<ArrayList<User>>() {}.getType();
+            if (isFirstLoad) { // If isFirstLoad we use default loading, otherwise -> pull to request
+                dialog.dismiss();
+                isFirstLoad = false;
+            } else {
+                mRefreshLayout.finishRefreshing();
+            }
+            Type listType = new TypeToken<ArrayList<User>>() {
+            }.getType();
             ArrayList<User> usersList = gson.fromJson(jsonResponse, listType);
             try {
                 JsonElement jelement = new JsonParser().parse(jsonResponse);
