@@ -19,4 +19,3 @@
     <item android:state_pressed="true" android:drawable="@drawable/btn_cling_pressed"/>
     <item android:drawable="@drawable/btn_cling_normal"/>
 </selector>
-<!-- From: file:/C:/Users/HieuNguyen/OneDrive/Tang%208%20-%20More/Samsung/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/showcase/src/main/res/drawable/cling_button_bg.xml -->

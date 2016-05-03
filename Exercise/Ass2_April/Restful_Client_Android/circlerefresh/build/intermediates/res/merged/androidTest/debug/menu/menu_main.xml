@@ -4,4 +4,3 @@
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
 </menu>
-<!-- From: file:/C:/Users/HieuNguyen/OneDrive/Tang%208%20-%20More/Samsung/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/circlerefresh/src/main/res/menu/menu_main.xml --><!-- From: file:/C:/Users/HieuNguyen/OneDrive/Tang%208%20-%20More/Samsung/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/circlerefresh/build/intermediates/bundles/debug/res/menu/menu_main.xml -->

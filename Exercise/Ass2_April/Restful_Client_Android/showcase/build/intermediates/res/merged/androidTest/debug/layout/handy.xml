@@ -19,4 +19,4 @@
 <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-        android:src="@drawable/hand" /><!-- From: file:/C:/Users/HieuNguyen/OneDrive/Tang%208%20-%20More/Samsung/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/showcase/src/main/res/layout/handy.xml --><!-- From: file:/C:/Users/HieuNguyen/OneDrive/Tang%208%20-%20More/Samsung/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/showcase/build/intermediates/bundles/debug/res/layout/handy.xml -->
+        android:src="@drawable/hand" />

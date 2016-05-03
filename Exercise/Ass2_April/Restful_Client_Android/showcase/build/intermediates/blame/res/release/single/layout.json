@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/showcase/build/intermediates/res/merged/release/layout/handy.xml",
+        "source": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/showcase/src/main/res/layout/handy.xml"
+    },
+    {
+        "merged": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/showcase/build/intermediates/res/merged/release/layout/showcase_button.xml",
+        "source": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/showcase/src/main/res/layout/showcase_button.xml"
+    }
+]
