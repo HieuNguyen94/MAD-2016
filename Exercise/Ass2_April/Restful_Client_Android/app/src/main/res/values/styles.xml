@@ -21,7 +21,7 @@
         <!--<item name="android:colorButtonNormal">@color/primary_darker</item>-->
     </style>
 
-    <style name="AppTheme.Home" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme.MainTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>
@@ -43,9 +43,11 @@
         <item name="android:background">@color/primary</item>
     </style>
 
-    <style name = "AppTheme.NoActionBar" parent = "Theme.AppCompat.NoActionBar">
-        <item name = "android:windowActionBar">false</item>
-        <item name = "android:windowNoTitle">true</item>
+    <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
     </style>
 
     <style name="CustomShowcaseTheme" parent="ShowcaseView.Light">
@@ -60,8 +62,13 @@
     <style name="CustomTitle" parent="TextAppearance.ShowcaseView.Title">
         <item name="android:textColor">#ffffff</item>
     </style>
+
     <style name="CustomDetail" parent="TextAppearance.ShowcaseView.Detail">
         <item name="android:textColor">#ff9995</item>
     </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>

@@ -57,21 +57,27 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             @Override
             public void onClick(View view) {
 //                Toast.makeText(context, "Comment", Toast.LENGTH_SHORT).show();
-                Snackbar.make(view, "This feature is not available at the moment", Snackbar.LENGTH_LONG).show();
+//                Snackbar.make(view, "This feature is not available at the moment", Snackbar.LENGTH_LONG).show();
+                Intent intent = new Intent(activity, PostDetails.class);
+                context.startActivity(intent);
             }
         });
         ((CellFeedViewHolder) viewHolder).ivUserProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 //                Toast.makeText(context, "Profile", Toast.LENGTH_SHORT).show();
-                Snackbar.make(view, "This feature is not available at the moment", Snackbar.LENGTH_LONG).show();
+//                Snackbar.make(view, "This feature is not available at the moment", Snackbar.LENGTH_LONG).show();
+                Intent intent = new Intent(activity, ProfileActivity.class);
+                context.startActivity(intent);
             }
         });
         ((CellFeedViewHolder) viewHolder).tvUsername.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 //                Toast.makeText(context, "Profile", Toast.LENGTH_SHORT).show();
-                Snackbar.make(view, "This feature is not available at the moment", Snackbar.LENGTH_LONG).show();
+//                Snackbar.make(view, "This feature is not available at the moment", Snackbar.LENGTH_LONG).show();
+                Intent intent = new Intent(activity, ProfileActivity.class);
+                context.startActivity(intent);
             }
         });
         ((CellFeedViewHolder) viewHolder).ivCardImage.setOnClickListener(new View.OnClickListener() {
