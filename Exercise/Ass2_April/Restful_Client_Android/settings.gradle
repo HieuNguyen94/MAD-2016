@@ -1,1 +1,1 @@
-include ':app', ':circlerefresh', ':library', ':showcase'
+include ':app', ':circlerefresh', ':library', ':showcase', ':blur-behind'

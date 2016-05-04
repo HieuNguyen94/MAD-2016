@@ -43,6 +43,11 @@
         <item name="android:background">@color/primary</item>
     </style>
 
+    <style name = "AppTheme.NoActionBar" parent = "Theme.AppCompat.NoActionBar">
+        <item name = "android:windowActionBar">false</item>
+        <item name = "android:windowNoTitle">true</item>
+    </style>
+
     <style name="CustomShowcaseTheme" parent="ShowcaseView.Light">
         <item name="sv_backgroundColor">#CC1D1D</item>
         <item name="sv_showcaseColor">#CC1D1D</item>

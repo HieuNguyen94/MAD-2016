@@ -1,6 +1,8 @@
 package com.restful_client_android;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +16,9 @@ import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.faradaj.blurbehind.BlurBehind;
+import com.faradaj.blurbehind.OnBlurCompleteListener;
+
 import org.w3c.dom.Text;
 
 
@@ -21,9 +26,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context context;
     private int itemsCount = 0;
+    private Activity activity;
 
-    public FeedAdapter(Context context) {
+    public FeedAdapter(Context context, Activity activity) {
         this.context = context;
+        this.activity = activity;
     }
 
     @Override
@@ -65,6 +72,20 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             public void onClick(View view) {
 //                Toast.makeText(context, "Profile", Toast.LENGTH_SHORT).show();
                 Snackbar.make(view, "This feature is not available at the moment", Snackbar.LENGTH_LONG).show();
+            }
+        });
+        ((CellFeedViewHolder) viewHolder).ivCardImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                Snackbar.make(view, "This feature is not available at the moment", Snackbar.LENGTH_LONG).show();
+                BlurBehind.getInstance().execute(activity, new OnBlurCompleteListener() {
+                    @Override
+                    public void onBlurComplete() {
+                        Intent intent = new Intent(activity, ViewImageActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        context.startActivity(intent);
+                    }
+                });
             }
         });
     }
