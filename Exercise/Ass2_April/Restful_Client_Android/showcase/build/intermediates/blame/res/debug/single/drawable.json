@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/showcase/build/intermediates/res/merged/debug/drawable/cling_button_bg.xml",
+        "source": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/showcase/src/main/res/drawable/cling_button_bg.xml"
+    },
+    {
+        "merged": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/showcase/build/intermediates/res/merged/debug/drawable/button.xml",
+        "source": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/showcase/src/main/res/drawable/button.xml"
+    },
+    {
+        "merged": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/showcase/build/intermediates/res/merged/debug/drawable/button_normal.xml",
+        "source": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/showcase/src/main/res/drawable/button_normal.xml"
+    }
+]
