@@ -4,12 +4,12 @@
         "source": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/circlerefresh/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.1.1/res/drawable-mdpi-v4/abc_textfield_search_activated_mtrl_alpha.9.png"
     },
     {
-        "merged": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/circlerefresh/build/intermediates/res/merged/release/drawable-mdpi-v4/abc_popup_background_mtrl_mult.9.png",
-        "source": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/circlerefresh/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.1.1/res/drawable-mdpi-v4/abc_popup_background_mtrl_mult.9.png"
-    },
-    {
         "merged": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/circlerefresh/build/intermediates/res/merged/release/drawable-mdpi-v4/abc_switch_track_mtrl_alpha.9.png",
         "source": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/circlerefresh/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.1.1/res/drawable-mdpi-v4/abc_switch_track_mtrl_alpha.9.png"
+    },
+    {
+        "merged": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/circlerefresh/build/intermediates/res/merged/release/drawable-mdpi-v4/abc_popup_background_mtrl_mult.9.png",
+        "source": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/circlerefresh/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.1.1/res/drawable-mdpi-v4/abc_popup_background_mtrl_mult.9.png"
     },
     {
         "merged": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/circlerefresh/build/intermediates/res/merged/release/drawable-mdpi-v4/abc_list_pressed_holo_dark.9.png",

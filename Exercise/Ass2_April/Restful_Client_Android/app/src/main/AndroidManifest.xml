@@ -56,8 +56,8 @@
             android:label="@string/title_activity_profile"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:theme="@style/AppTheme.MainTheme"
-            android:name=".PostDetails"></activity>
+            android:name=".PostDetails"
+            android:theme="@style/AppTheme.MainTheme" />
     </application>
 
 </manifest>

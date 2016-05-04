@@ -4,22 +4,17 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.faradaj.blurbehind.BlurBehind;
 import com.faradaj.blurbehind.OnBlurCompleteListener;
-
-import org.w3c.dom.Text;
 
 
 public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {

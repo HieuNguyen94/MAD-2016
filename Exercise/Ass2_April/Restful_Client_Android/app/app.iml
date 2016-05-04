@@ -125,6 +125,7 @@
     <orderEntry type="library" exported="" name="design-23.1.1" level="project" />
     <orderEntry type="module" module-name="blur-behind" exported="" />
     <orderEntry type="module" module-name="showcase" exported="" />
+    <orderEntry type="module" module-name="circlesimageview" exported="" />
     <orderEntry type="module" module-name="library" exported="" />
     <orderEntry type="module" module-name="circlerefresh" exported="" />
   </component>
