@@ -17,7 +17,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/iv_ImageDetail"
-        android:src="@drawable/img_feed_center_1"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/ib_closeImageDetail" />
 </RelativeLayout>

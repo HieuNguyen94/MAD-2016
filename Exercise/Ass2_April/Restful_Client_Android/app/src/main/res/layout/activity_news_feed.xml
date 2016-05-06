@@ -19,17 +19,16 @@
             android:scrollbars="none"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-        <!--<android.support.design.widget.AppBarLayout-->
-            <!--android:id="@+id/appBarLayout"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content">-->
-
-            <!--<include-->
-                <!--android:id="@+id/toolbar"-->
-                <!--layout="@layout/view_feed_toolbar" />-->
-        <!--</android.support.design.widget.AppBarLayout>-->
-
-
+        <com.melnykov.fab.FloatingActionButton
+            android:id="@+id/fabnewPost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_add_white_24dp"
+            fab:fab_colorNormal="@color/primary_dark"
+            fab:fab_colorPressed="@color/primary_darker"
+            fab:fab_colorRipple="@color/primary"/>
     </android.support.design.widget.CoordinatorLayout>
 
 </RelativeLayout>

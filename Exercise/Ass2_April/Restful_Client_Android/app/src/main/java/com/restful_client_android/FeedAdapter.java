@@ -15,17 +15,21 @@ import android.widget.TextView;
 
 import com.faradaj.blurbehind.BlurBehind;
 import com.faradaj.blurbehind.OnBlurCompleteListener;
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 
 
 public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context context;
-    private int itemsCount = 0;
     private Activity activity;
+    public ArrayList<FeedCardData> cardDataList;
 
-    public FeedAdapter(Context context, Activity activity) {
+    public FeedAdapter(Context context, Activity activity, ArrayList<FeedCardData> data) {
         this.context = context;
         this.activity = activity;
+        this.cardDataList = data;
     }
 
     @Override
@@ -37,9 +41,17 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
         final CellFeedViewHolder holder = (CellFeedViewHolder) viewHolder;
-//        bindDefaultFeedItem(position, holder);
+
+        //bind data
+        FeedCardData card = cardDataList.get(position);
+        Picasso.with(context).load(card.avatarUrl).into(holder.ivUserProfile);
+        holder.tvUsername.setText(card.username);
+        Picasso.with(context).load(card.cardImageUrl).into(holder.ivCardImage);
+        holder.tvDescription.setText(card.description);
+        holder.tsLikesCounter.setText(card.likeNumber);
+
         //TODO bind event
         ((CellFeedViewHolder) viewHolder).btnLike.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,6 +95,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     @Override
                     public void onBlurComplete() {
                         Intent intent = new Intent(activity, ViewImageActivity.class);
+                        intent.putExtra(Constants.card_image_url, getCardData(position).cardImageUrl);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                         context.startActivity(intent);
                     }
@@ -108,7 +121,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public void updateItems() {
-        itemsCount = 10;
         notifyDataSetChanged();
     }
 
@@ -119,7 +131,22 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return itemsCount;
+        return cardDataList.size();
+    }
+
+    public void insertCard(int position, FeedCardData data) {
+        cardDataList.add(position, data);
+        notifyItemInserted(position);
+    }
+
+    public void removeCard(FeedCardData data) {
+        int pos = cardDataList.indexOf(data);
+        cardDataList.remove(pos);
+        notifyItemRemoved(pos);
+    }
+
+    public FeedCardData getCardData(int position) {
+        return cardDataList.get(position);
     }
 
     public static class CellFeedViewHolder extends RecyclerView.ViewHolder {
