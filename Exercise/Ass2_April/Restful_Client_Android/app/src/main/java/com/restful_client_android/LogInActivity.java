@@ -12,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,7 +26,7 @@ import java.net.URL;
 
 public class LogInActivity extends AppCompatActivity {
 
-    private final String WS_URL = Util.WS_LOGIN_URL;
+    private final String WS_URL = Utils.WS_LOGIN_URL;
     private EditText usernameET;
     private EditText passwordET;
 
@@ -137,7 +136,7 @@ public class LogInActivity extends AppCompatActivity {
             if (result == 1){
                 Log.e("result", "1");
                 Toast.makeText(LogInActivity.this, "Login successfully", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(LogInActivity.this, MainActivity.class);
+                Intent intent = new Intent(LogInActivity.this, NewsFeedActivity.class);
                 startActivity(intent);
             }
             else if (result ==0){

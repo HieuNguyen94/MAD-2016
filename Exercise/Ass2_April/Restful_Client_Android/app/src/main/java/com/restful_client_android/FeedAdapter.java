@@ -17,6 +17,9 @@ import com.faradaj.blurbehind.BlurBehind;
 import com.faradaj.blurbehind.OnBlurCompleteListener;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 
@@ -84,6 +87,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 //                Toast.makeText(context, "Profile", Toast.LENGTH_SHORT).show();
 //                Snackbar.make(view, "This feature is not available at the moment", Snackbar.LENGTH_LONG).show();
                 Intent intent = new Intent(activity, ProfileActivity.class);
+                intent.putExtra(Variables.apiUsername, getCardData(position).username);
                 context.startActivity(intent);
             }
         });
@@ -95,7 +99,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     @Override
                     public void onBlurComplete() {
                         Intent intent = new Intent(activity, ViewImageActivity.class);
-                        intent.putExtra(Constants.card_image_url, getCardData(position).cardImageUrl);
+                        intent.putExtra(Variables.cardImageUrl, getCardData(position).cardImageUrl);
+                        intent.putExtra(Variables.apiContent, getCardData(position).description);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                         context.startActivity(intent);
                     }
@@ -139,10 +144,47 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         notifyItemInserted(position);
     }
 
+    public void insertCard(int position, JSONObject object) {
+        try {
+            FeedCardData card = new FeedCardData(
+                    object.getString(Variables.apiUserAvatar),
+                    object.getString(Variables.apiUsername),
+                    object.getString(Variables.apiCardImage),
+                    object.getString(Variables.apiContent),
+                    object.getString(Variables.apiNumberLike));
+            insertCard(position, card);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void insertCard(FeedCardData data) {
+        cardDataList.add(data);
+    }
+
+    public void insertCard(JSONObject object) {
+        try {
+            FeedCardData card = new FeedCardData(
+                    object.getString(Variables.apiUserAvatar),
+                    object.getString(Variables.apiUsername),
+                    object.getString(Variables.apiCardImage),
+                    object.getString(Variables.apiContent),
+                    object.getString(Variables.apiNumberLike));
+            insertCard(card);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void removeCard(FeedCardData data) {
         int pos = cardDataList.indexOf(data);
         cardDataList.remove(pos);
         notifyItemRemoved(pos);
+    }
+
+    public void removeAllCard() {
+        cardDataList.clear();
+        notifyDataSetChanged();
     }
 
     public FeedCardData getCardData(int position) {

@@ -139,7 +139,8 @@
                 android:layout_alignEnd="@id/avatarLinear"
                 android:scaleType="fitCenter"
                 android:background="#FFE3E3E3"
-                android:layout_margin="5dp" />
+                android:layout_margin="5dp"
+                android:visibility="invisible" />
         </RelativeLayout>
 
     </android.support.v7.widget.CardView>

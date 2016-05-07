@@ -5,18 +5,27 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <ImageButton
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:id="@+id/ib_closeImageDetail"
-        android:background="@drawable/btn_close_image_detail"
-        android:layout_margin="10dp" />
-
     <com.restful_client_android.TouchImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/iv_ImageDetail"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/ib_closeImageDetail" />
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="lorem ipsum dolor sit amet consectetuer adipiscing elit"
+        android:id="@+id/tv_imageDescription"
+        android:textColor="#ffffff"
+        android:layout_alignParentBottom="true"
+        android:padding="20dp" />
+    <ImageButton
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:id="@+id/ib_closeImageDetail"
+        android:background="@drawable/btn_close_image"
+        android:layout_margin="10dp"
+        android:layout_alignParentTop="true" />
+
 </RelativeLayout>

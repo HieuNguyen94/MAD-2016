@@ -12,9 +12,11 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/blur-behind" />
-            <option value="$PROJECT_DIR$/circlerefresh" />
             <option value="$PROJECT_DIR$/circlesimageview" />
+            <option value="$PROJECT_DIR$/dialogcommons" />
+            <option value="$PROJECT_DIR$/dialogcore" />
             <option value="$PROJECT_DIR$/library" />
+            <option value="$PROJECT_DIR$/pullToRefresh" />
             <option value="$PROJECT_DIR$/showcase" />
           </set>
         </option>
@@ -23,9 +25,11 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/blur-behind" />
-            <option value="$PROJECT_DIR$/circlerefresh" />
             <option value="$PROJECT_DIR$/circlesimageview" />
+            <option value="$PROJECT_DIR$/dialogcommons" />
+            <option value="$PROJECT_DIR$/dialogcore" />
             <option value="$PROJECT_DIR$/library" />
+            <option value="$PROJECT_DIR$/pullToRefresh" />
             <option value="$PROJECT_DIR$/showcase" />
           </set>
         </option>

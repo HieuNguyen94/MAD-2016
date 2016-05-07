@@ -60,12 +60,12 @@
         "source": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/blur-behind/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.1/res/layout/notification_media_action.xml"
     },
     {
-        "merged": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/blur-behind/build/intermediates/res/merged/androidTest/debug/layout/notification_template_part_time.xml",
-        "source": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/blur-behind/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.1/res/layout/notification_template_part_time.xml"
-    },
-    {
         "merged": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/blur-behind/build/intermediates/res/merged/androidTest/debug/layout/select_dialog_item_material.xml",
         "source": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/blur-behind/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.1/res/layout/select_dialog_item_material.xml"
+    },
+    {
+        "merged": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/blur-behind/build/intermediates/res/merged/androidTest/debug/layout/notification_template_part_time.xml",
+        "source": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/blur-behind/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.1/res/layout/notification_template_part_time.xml"
     },
     {
         "merged": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/blur-behind/build/intermediates/res/merged/androidTest/debug/layout/abc_action_menu_layout.xml",

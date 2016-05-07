@@ -22,4 +22,8 @@
   <color name="fab_color_shadow">#44000000</color>
   <color name="text_like_counter">#2b5a83</color>
   <color name="paint_color">#dddddd</color>
+  <color name="material_indigo_500">#3F51B5</color>
+  <color name="material_indigo_600">#3949AB</color>
+  <color name="material_teal_a400">#1DE9B6</color>
+
 </resources>

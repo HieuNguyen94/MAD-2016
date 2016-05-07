@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.faradaj.blurbehind.BlurBehind;
 import com.squareup.picasso.Picasso;
@@ -15,6 +16,7 @@ public class ViewImageActivity extends AppCompatActivity {
     RelativeLayout blurBackground;
     com.restful_client_android.TouchImageView iv_ImageDetail;
     ImageButton ib_closeImageDetail;
+    TextView tv_description;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,11 +24,12 @@ public class ViewImageActivity extends AppCompatActivity {
         blurBackground = (RelativeLayout) findViewById(R.id.blurBackground);
         iv_ImageDetail = (com.restful_client_android.TouchImageView) findViewById(R.id.iv_ImageDetail);
         ib_closeImageDetail = (ImageButton) findViewById(R.id.ib_closeImageDetail);
+        tv_description = (TextView) findViewById(R.id.tv_imageDescription);
         BlurBehind.getInstance()
                 .withAlpha(80)
                 .withFilterColor(Color.parseColor("#FFFFFFFF"))
                 .setBackground(this);
-        String cardImageUrl = getIntent().getStringExtra(Constants.card_image_url);
+        String cardImageUrl = getIntent().getStringExtra(Variables.cardImageUrl);
         Picasso.with(this)
                 .load(cardImageUrl)
                 .into(iv_ImageDetail);
@@ -40,5 +43,6 @@ public class ViewImageActivity extends AppCompatActivity {
                 overridePendingTransition(0, 0); // remove exit animation
             }
         });
+        tv_description.setText(getIntent().getStringExtra(Variables.apiContent));
     }
 }

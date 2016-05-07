@@ -24,7 +24,7 @@ import java.net.URL;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    private final String WS_URL = Util.WS_SIGNUP_URL;
+    private final String WS_URL = Utils.WS_SIGNUP_URL;
     private EditText usernameET;
     private EditText passwordET;
     private EditText password2ET;
@@ -62,7 +62,7 @@ public class SignUpActivity extends AppCompatActivity {
                     return;
                 }
                 else {
-                    new RequestWebService().execute(WS_URL, Util.WS_CHECKUSERNAME_URL);
+                    new RequestWebService().execute(WS_URL, Utils.WS_CHECKUSERNAME_URL);
                 }
             }
         });

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.restful_client_android.SquaredFrameLayout
+        android:id="@+id/vImageRoot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <!--<ImageView-->
+        <!--android:id="@+id/iv_newPostImage"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:scaleType="centerCrop"-->
+        <!--android:src="@drawable/img_feed_center_1" />-->
+
+        <com.restful_client_android.TouchImageView
+        android:src="@drawable/img_feed_center_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/iv_newPostImage"
+        android:layout_centerHorizontal="true" />
+</com.restful_client_android.SquaredFrameLayout>
+
+<EditText
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:inputType="textMultiLine"
+    android:ems="10"
+    android:id="@+id/et_new_post_desc"
+    android:layout_weight="1"
+    android:textColor="#ffffff" />
+
+
+
+</LinearLayout>
