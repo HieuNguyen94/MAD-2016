@@ -16,22 +16,23 @@ public class FeedCardData {
     public String cardImageUrl;
     public String description;
     public String likeNumber;
+    public String postId;
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    FeedCardData(String avatarUrl, String username, String cardImageUrl, String description, String likeNumber) {
+    FeedCardData(String avatarUrl, String username, String cardImageUrl, String description, String likeNumber, String postId) {
         if (avatarUrl.equals("")) {
             this.avatarUrl = Variables.defaultAvatarUrl;
         } else {
             this.avatarUrl = avatarUrl;
         }
-        try {
-            URI iurl = new URI(cardImageUrl);
-            this.cardImageUrl = cardImageUrl;
-        } catch (URISyntaxException e) {
+        if (cardImageUrl.equals("")) {
             this.cardImageUrl = Variables.defaultCardImageUrl;
+        } else {
+            this.cardImageUrl = cardImageUrl;
         }
         this.username = username;
         this.description = description;
         this.likeNumber = likeNumber;
+        this.postId = postId;
     }
 }

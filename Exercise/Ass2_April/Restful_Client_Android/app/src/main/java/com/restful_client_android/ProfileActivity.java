@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -65,7 +66,7 @@ public class ProfileActivity extends AppCompatActivity {
         JSONObject params = new JSONObject();
         StringEntity entity = null;
         try {
-            params.put("username", "nghia"); //TODO
+            params.put("username", username); //TODO
             entity = new StringEntity(params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
@@ -109,6 +110,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 loadingDialog.dismiss();
+                Toast.makeText(getApplicationContext(), "Loading error", Toast.LENGTH_SHORT).show();
             }
 
             @Override

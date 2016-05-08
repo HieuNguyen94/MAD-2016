@@ -1,7 +1,9 @@
 package com.restful_client_android;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.os.Build;
+import android.widget.Toast;
 
 import java.util.Objects;
 
@@ -19,4 +21,10 @@ public class Utils {
     public static boolean isCurrentUser(String username) {
         return (Objects.equals(username, Variables.currentLoginUsername));
     }
+
+    public static void showToast(Context context, String message) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+    }
+
+
 }

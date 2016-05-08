@@ -14,20 +14,16 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem;
 import com.baoyz.widget.PullRefreshLayout;
-import com.faradaj.blurbehind.BlurBehind;
-import com.faradaj.blurbehind.OnBlurCompleteListener;
 import com.melnykov.fab.FloatingActionButton;
 import com.loopj.android.http.*;
 
@@ -35,6 +31,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -49,14 +46,16 @@ public class NewsFeedActivity extends AppCompatActivity {
     private RecyclerView rvFeed;
     FloatingActionButton fab;
     AsyncHttpClient client;
-    static final int REQUEST_IMAGE_CAPTURE = 1;
-    private int PICK_IMAGE_REQUEST = 2;
+    AsyncHttpClient imageUploadClient;
+    static final int PICK_IMAGE_CAMERY_REQUEST = 1;
+    private int PICK_IMAGE_GALLERY_REQUEST = 2;
     private FeedAdapter feedAdapter;
     private ProgressDialog newsFeedProgressDialog;
     private MaterialDialog selectImageDialog;
-    private Toast mToast;
+    private MaterialDialog progressUploadDialog;
     private String pictureImagePath = "";
     private PullRefreshLayout pullToRefreshLayout;
+    private View positiveAction;
 
 
     @Override
@@ -70,12 +69,15 @@ public class NewsFeedActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 showSelectImageDialog();
+//                showProgressDeterminateDialog();
             }
         });
         newsFeedProgressDialog = new ProgressDialog(NewsFeedActivity.this, R.style.AppTheme_Dark_Dialog);
         newsFeedProgressDialog.setMessage(Variables.dialogMessageAlmostThere);
         newsFeedProgressDialog.setCanceledOnTouchOutside(false);
         client = new AsyncHttpClient();
+        imageUploadClient = new AsyncHttpClient();
+        imageUploadClient.addHeader("Authorization", "Client-ID 9806c7ef5d11150"); //TODO
         setupFeed();
         pullToRefreshLayout = (PullRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         pullToRefreshLayout.setRefreshStyle(PullRefreshLayout.STYLE_CIRCLES);
@@ -84,9 +86,7 @@ public class NewsFeedActivity extends AppCompatActivity {
             public void onRefresh() {
                 try {
                     getListFeed();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } catch (UnsupportedEncodingException e) {
+                } catch (JSONException | UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
             }
@@ -100,7 +100,7 @@ public class NewsFeedActivity extends AppCompatActivity {
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         // Always show the chooser (if there are multiple options available)
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_GALLERY_REQUEST);
     }
 
     private void dispatchTakePictureIntent() {
@@ -113,12 +113,12 @@ public class NewsFeedActivity extends AppCompatActivity {
         Uri outputFileUri = Uri.fromFile(file);
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-        startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);
+        startActivityForResult(cameraIntent, PICK_IMAGE_CAMERY_REQUEST);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+        if (requestCode == PICK_IMAGE_CAMERY_REQUEST && resultCode == RESULT_OK) {
             File imgFile = new  File(pictureImagePath);
             if(imgFile.exists()){
                 Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
@@ -126,7 +126,7 @@ public class NewsFeedActivity extends AppCompatActivity {
             }
         }
 
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+        if (requestCode == PICK_IMAGE_GALLERY_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             Uri uri = data.getData();
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
@@ -145,35 +145,18 @@ public class NewsFeedActivity extends AppCompatActivity {
             }
         };
         rvFeed.setLayoutManager(linearLayoutManager);
-        ArrayList<FeedCardData> data = new ArrayList<FeedCardData>();
         feedAdapter = new FeedAdapter(this, NewsFeedActivity.this, new ArrayList<FeedCardData>());
         rvFeed.setAdapter(feedAdapter);
         try {
             getListFeed();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
+        } catch (JSONException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         feedAdapter.updateItems();
     }
 
-
-    public void showImage() {
-        BlurBehind.getInstance().execute(NewsFeedActivity.this, new OnBlurCompleteListener() {
-            @Override
-            public void onBlurComplete() {
-                Intent intent = new Intent(NewsFeedActivity.this, ViewImageActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                startActivity(intent);
-            }
-        });
-    }
-
-    private View positiveAction;
-    private EditText passwordInput;
-
-    public void showNewPostPopup(Bitmap bitmap) {
+    public void showNewPostPopup(final Bitmap bitmap) {
+        EditText et_description;
         MaterialDialog newPostDialog = new MaterialDialog.Builder(this)
                 .title("New Post")
                 .titleColor(Color.WHITE)
@@ -189,10 +172,11 @@ public class NewsFeedActivity extends AppCompatActivity {
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        //TODO click post button
+                        EditText contentTextView = (EditText) dialog.getCustomView().findViewById(R.id.et_new_post_desc);
+                        uploadImage(bitmap, contentTextView.getText().toString());
                     }
                 }).build();
-        EditText et_description = (EditText)newPostDialog.getCustomView().findViewById(R.id.et_new_post_desc);
+        et_description = (EditText)newPostDialog.getCustomView().findViewById(R.id.et_new_post_desc);
         ImageView iv_newPostImage = (ImageView) newPostDialog.getCustomView().findViewById(R.id.iv_newPostImage);
         iv_newPostImage.setImageBitmap(bitmap);
         positiveAction = newPostDialog.getActionButton(DialogAction.POSITIVE);
@@ -217,7 +201,7 @@ public class NewsFeedActivity extends AppCompatActivity {
 
     private void getListFeed() throws JSONException, UnsupportedEncodingException {
         JSONObject params = new JSONObject();
-        params.put("username", "nghia"); //TODO
+        params.put("username", Variables.currentLoginUsername); //TODO
         params.put("pageindex", "0");
         params.put("pagesize", Variables.defaultPageSize);
         StringEntity entity = new StringEntity(params.toString());
@@ -256,7 +240,7 @@ public class NewsFeedActivity extends AppCompatActivity {
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 newsFeedProgressDialog.dismiss();
                 pullToRefreshLayout.setRefreshing(false);
-                showToast("Loading error");
+                Utils.showToast(getApplicationContext(), "Loading error");
             }
 
             @Override
@@ -264,12 +248,12 @@ public class NewsFeedActivity extends AppCompatActivity {
                 //TODO on failure handler
                 newsFeedProgressDialog.dismiss();
                 pullToRefreshLayout.setRefreshing(false);
-                showToast("Loading error");
+                Utils.showToast(getApplicationContext(), "Loading error");
             }
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                showToast("Success");
+                Utils.showToast(getApplicationContext(), "Success");
                 // Firstly remove all cards
                 feedAdapter.removeAllCard();
                 try {
@@ -278,10 +262,10 @@ public class NewsFeedActivity extends AppCompatActivity {
                     if (success.equals("true")) {
                         for(int i = 0; i < cartList.length(); i++) {
                             JSONObject post = (JSONObject) cartList.get(i);
-                            feedAdapter.insertCard(post);
+                            feedAdapter.insertCard(0, post);
                         }
                     } else {
-                        showToast("Loading error");
+                        Utils.showToast(getApplicationContext(), "Loading error");
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -290,18 +274,6 @@ public class NewsFeedActivity extends AppCompatActivity {
                     newsFeedProgressDialog.dismiss();
                     pullToRefreshLayout.setRefreshing(false);
                 }
-//                try {
-//                    for(int i = 0; i < response.length(); i++) {
-//                        JSONObject post = (JSONObject) response.get(i);
-//                        feedAdapter.insertCard(post);
-//                    }
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                } finally {
-//                    feedAdapter.notifyDataSetChanged();
-//                    newsFeedProgressDialog.dismiss();
-//                    pullToRefreshLayout.setRefreshing(false);
-//                }
             }
 
             @Override
@@ -314,36 +286,6 @@ public class NewsFeedActivity extends AppCompatActivity {
 
             }
         });
-    }
-
-    public void showInputDialog() {
-        new MaterialDialog.Builder(this)
-                .title("Input")
-                .content("Enter your message here")
-                .customView(R.layout.new_post_dialog, true)
-                .inputType(InputType.TYPE_CLASS_TEXT |
-                        InputType.TYPE_TEXT_VARIATION_PERSON_NAME |
-                        InputType.TYPE_TEXT_FLAG_CAP_WORDS)
-                .inputRange(0, Variables.commentMaxLength)
-                .positiveText("Submit")
-                .contentColor(Color.BLACK)
-                .widgetColorRes(R.color.material_teal_a400)
-                .positiveColorRes(R.color.material_teal_a400)
-                .input("John Appleseed", "John Appleseed", false, new MaterialDialog.InputCallback() {
-                    @Override
-                    public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-                        showToast("Hello, " + input.toString() + "!");
-                    }
-                }).show();
-    }
-
-    private void showToast(String message) {
-        if (mToast != null) {
-            mToast.cancel();
-            mToast = null;
-        }
-        mToast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
-        mToast.show();
     }
 
     public void showSelectImageDialog() {
@@ -365,7 +307,7 @@ public class NewsFeedActivity extends AppCompatActivity {
                     @Override
                     public void onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
                         MaterialSimpleListItem item = adapter.getItem(which);
-                        showToast(item.getContent().toString());
+                        Utils.showToast(getApplicationContext(), item.getContent().toString());
                         if (which == 0) { // Select from gallery
                             dispatchTakePictureGalleryIntent();
                         } else { // Using camera
@@ -376,5 +318,151 @@ public class NewsFeedActivity extends AppCompatActivity {
                     }
                 })
                 .show();
+    }
+
+    private void uploadImage(Bitmap image, final String content) {
+        String myBase64Image = encodeToBase64(image, Bitmap.CompressFormat.JPEG, Variables.bitmapCompressQuality);
+        JSONObject params = new JSONObject();
+        StringEntity entity = null;
+        try {
+            params.put("image", myBase64Image);
+            params.put("album", "jF7fMpi2QZ1celm");
+            params.put("type", "file");
+            params.put("name", "first");
+            params.put("title", "first");
+            params.put("description", "first image");
+            entity = new StringEntity(params.toString());
+        } catch (JSONException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        showIndeterminateProgressDialog(true);
+        imageUploadClient.post(getApplicationContext(), Variables.uploadImageApiUrl, entity, "application/json", new JsonHttpResponseHandler(){
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                super.onSuccess(statusCode, headers, responseString);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                progressUploadDialog.dismiss();
+                System.out.println("Upload image failed");
+                //TODO reshow new post dialog
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                super.onSuccess(statusCode, headers, response);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                System.out.println("Upload image successfully");
+                progressUploadDialog.dismiss();
+                try {
+                    String success = response.getString(Variables.apiSuccess);
+                    JSONObject data = response.getJSONObject(Variables.apiData);
+                    if (success.equals("true")) {
+                        System.out.println("url " + data.getString(Variables.apiLink));
+                        createNewPost(data.getString(Variables.apiLink), content);
+                    } else {
+                        Utils.showToast(getApplicationContext(), "Loading error");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private static String encodeToBase64(Bitmap image, Bitmap.CompressFormat compressFormat, int quality)
+    {
+        ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
+        image.compress(compressFormat, quality, byteArrayOS);
+        return Base64.encodeToString(byteArrayOS.toByteArray(), Base64.DEFAULT);
+    }
+
+    private void showIndeterminateProgressDialog(boolean horizontal) {
+        progressUploadDialog = new MaterialDialog.Builder(this)
+                .title("Uploading image")
+                .content("Please wait")
+                .progress(true, 0)
+                .widgetColorRes(R.color.material_teal_a400)
+                .progressIndeterminateStyle(horizontal)
+                .canceledOnTouchOutside(false)
+                .show();
+    }
+
+    private void createNewPost(String imageUrl, String content) {
+        JSONObject params = new JSONObject();
+        StringEntity entity = null;
+        try {
+            params.put("username", "nghia"); //TODO change value
+            params.put("content", content);
+            params.put("cardimage", imageUrl);
+            entity = new StringEntity(params.toString());
+        } catch (JSONException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        imageUploadClient.post(getApplicationContext(), Variables.createPostApiUrl, entity, "application/json", new JsonHttpResponseHandler(){
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                super.onSuccess(statusCode, headers, responseString);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                progressUploadDialog.dismiss();
+                Utils.showToast(getApplicationContext(), "Create new post failed");
+                System.out.println("Create new post failed");
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                super.onSuccess(statusCode, headers, response);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Utils.showToast(getApplicationContext(), "Create new post successfully");
+                System.out.println("Create new post successfully");
+                progressUploadDialog.dismiss();
+                try {
+                    String success = response.getString(Variables.apiSuccess);
+                    String message = response.getString(Variables.apiMessage);
+                    if (success.equals("true")) {
+                        getListFeed();
+                    } else {
+                        Utils.showToast(getApplicationContext(), "Loading error" + message);
+                    }
+                } catch (JSONException | UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                } finally {
+                    progressUploadDialog.dismiss();
+                }
+            }
+        });
     }
 }

@@ -26,6 +26,7 @@
         android:id="@+id/ib_closeImageDetail"
         android:background="@drawable/btn_close_image"
         android:layout_margin="10dp"
-        android:layout_alignParentTop="true" />
+        android:layout_alignParentTop="true"
+        android:src="@drawable/btn_close" />
 
 </RelativeLayout>

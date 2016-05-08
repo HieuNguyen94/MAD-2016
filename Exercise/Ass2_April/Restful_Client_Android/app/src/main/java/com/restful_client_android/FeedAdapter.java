@@ -15,12 +15,19 @@ import android.widget.TextView;
 
 import com.faradaj.blurbehind.BlurBehind;
 import com.faradaj.blurbehind.OnBlurCompleteListener;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
 
 
 public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -28,11 +35,70 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context context;
     private Activity activity;
     public ArrayList<FeedCardData> cardDataList;
+    private AsyncHttpClient likePostClient;
 
     public FeedAdapter(Context context, Activity activity, ArrayList<FeedCardData> data) {
         this.context = context;
         this.activity = activity;
         this.cardDataList = data;
+        likePostClient = new AsyncHttpClient();
+    }
+
+    public void likePost(Context context, String postId, final int originLikeNumber, final TextSwitcher textSwitcher) {
+        JSONObject params = new JSONObject();
+        StringEntity entity = null;
+        try {
+            params.put("postid", postId);
+            params.put("username", Variables.currentLoginUsername);
+            entity = new StringEntity(params.toString());
+        } catch (JSONException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        likePostClient.post(context, Variables.likePostApiUrl, entity, "application/json", new JsonHttpResponseHandler(){
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                super.onSuccess(statusCode, headers, responseString);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                System.out.println("Like a post failed");
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                super.onSuccess(statusCode, headers, response);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    String success = response.getString(Variables.apiSuccess);
+                    String message = response.getString(Variables.apiMessage);
+                    if (success.equals("true")) {
+                        System.out.println("Like a post successfully");
+                        int newLike = (originLikeNumber + 1);
+                        textSwitcher.setText("" + newLike);
+                    } else {
+                        System.out.println("Like a post ERROR" + message);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override
@@ -48,11 +114,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         final CellFeedViewHolder holder = (CellFeedViewHolder) viewHolder;
 
         //bind data
-        FeedCardData card = cardDataList.get(position);
+        final FeedCardData card = cardDataList.get(position);
         Picasso.with(context).load(card.avatarUrl).into(holder.ivUserProfile);
         holder.tvUsername.setText(card.username);
-        Picasso.with(context).load(card.cardImageUrl).into(holder.ivCardImage);
-        System.out.println(card.cardImageUrl);
+        Picasso.with(context).load(card.cardImageUrl).resize(250, 250).centerCrop().into(holder.ivCardImage);
         holder.tvDescription.setText(card.description);
         holder.tsLikesCounter.setText(card.likeNumber);
 
@@ -62,6 +127,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             public void onClick(View view) {
 //                Toast.makeText(context, "Like", Toast.LENGTH_SHORT).show();
                 Snackbar.make(view, "This feature is not available at the moment", Snackbar.LENGTH_LONG).show();
+                likePost(context, card.postId, Integer.parseInt(card.likeNumber), holder.tsLikesCounter);
             }
         });
         ((CellFeedViewHolder) viewHolder).btnComments.setOnClickListener(new View.OnClickListener() {
@@ -110,22 +176,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         });
     }
 
-    private void bindDefaultFeedItem(int position, CellFeedViewHolder holder) {
-        if (position % 2 == 0) {
-            holder.ivCardImage.setImageResource(R.drawable.img_feed_center_1);
-//            holder.ivFeedBottom.setImageResource(R.drawable.img_feed_bottom_1);
-        } else {
-            holder.ivCardImage.setImageResource(R.drawable.img_feed_center_2);
-//            holder.ivFeedBottom.setImageResource(R.drawable.img_feed_bottom_2);
-        }
-
-        holder.btnComments.setTag(position);
-        holder.btnMore.setTag(position);
-        holder.ivCardImage.setTag(holder);
-        holder.btnLike.setTag(holder);
-
-    }
-
     public void updateItems() {
         notifyDataSetChanged();
     }
@@ -152,7 +202,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     object.getString(Variables.apiUsername),
                     object.getString(Variables.apiCardImage),
                     object.getString(Variables.apiContent),
-                    object.getString(Variables.apiNumberLike));
+                    object.getString(Variables.apiNumberLike),
+                    object.getString("id"));
             insertCard(position, card);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -170,7 +221,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     object.getString(Variables.apiUsername),
                     object.getString(Variables.apiCardImage),
                     object.getString(Variables.apiContent),
-                    object.getString(Variables.apiNumberLike));
+                    object.getString(Variables.apiNumberLike),
+                    object.getString("id"));
             insertCard(card);
         } catch (JSONException e) {
             e.printStackTrace();
