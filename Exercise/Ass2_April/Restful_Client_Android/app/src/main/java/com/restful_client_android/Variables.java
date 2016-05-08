@@ -15,11 +15,18 @@ public class Variables {
     public static String apiCardImage = "cardImage";
     public static String apiNumberLike = "numLikes";
     public static String apiUserAvatar = "userAvatar";
-    public static int defaultPageSize = 10;
+    public static String apiSuccess = "success";
+    public static String apiMessage = "message";
+    public static String apiEmail = "email";
+    public static String apiAddress = "address";
+    public static String apiData = "data";
+    public static int defaultPageSize = 50;
     public static String getNewsFeedApiUrl = "http://mad-ass1-2016.herokuapp.com/post/getnewsfeed";
+    public static String getUserInfoApiUrl = "http://mad-ass1-2016.herokuapp.com/user/getuserinfo";
     public static String defaultAvatarUrl = "http://www.megaicons.net/static/img/icons_sizes/189/462/256/young-lion-icon.png";
-    public static String defaultCardImageUrl = "https://pbs.twimg.com/profile_images/633782900077408256/F541mrSs_400x400.jpg";
+    public static String defaultCardImageUrl = "http://www.livescience.com/images/i/000/076/996/original/walking-nature-150629.jpg?1435603472";
     public static int commentMaxLength = 160;
     public static boolean isFirstLoad = true;
     public static String currentLoginUsername = "hieu";
+    public static String dialogMessageAlmostThere = "Almost there";
 }

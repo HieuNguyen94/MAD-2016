@@ -73,7 +73,7 @@ public class NewsFeedActivity extends AppCompatActivity {
             }
         });
         newsFeedProgressDialog = new ProgressDialog(NewsFeedActivity.this, R.style.AppTheme_Dark_Dialog);
-        newsFeedProgressDialog.setMessage("Just a moment. We are now preparing your News Feed");
+        newsFeedProgressDialog.setMessage(Variables.dialogMessageAlmostThere);
         newsFeedProgressDialog.setCanceledOnTouchOutside(false);
         client = new AsyncHttpClient();
         setupFeed();
@@ -217,9 +217,9 @@ public class NewsFeedActivity extends AppCompatActivity {
 
     private void getListFeed() throws JSONException, UnsupportedEncodingException {
         JSONObject params = new JSONObject();
-        params.put(Variables.apiUsername, "nghia");
-        params.put(Variables.apiPageIndex, "0");
-        params.put(Variables.apiPageSize, Variables.defaultPageSize);
+        params.put("username", "nghia"); //TODO
+        params.put("pageindex", "0");
+        params.put("pagesize", Variables.defaultPageSize);
         StringEntity entity = new StringEntity(params.toString());
 
         // Only show newsfeed progress dialog in the first time, otherwise using pull to refresh
@@ -254,7 +254,9 @@ public class NewsFeedActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-
+                newsFeedProgressDialog.dismiss();
+                pullToRefreshLayout.setRefreshing(false);
+                showToast("Loading error");
             }
 
             @Override
@@ -262,11 +264,44 @@ public class NewsFeedActivity extends AppCompatActivity {
                 //TODO on failure handler
                 newsFeedProgressDialog.dismiss();
                 pullToRefreshLayout.setRefreshing(false);
+                showToast("Loading error");
             }
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-
+                showToast("Success");
+                // Firstly remove all cards
+                feedAdapter.removeAllCard();
+                try {
+                    String success = response.getString(Variables.apiSuccess);
+                    JSONArray cartList = response.getJSONArray(Variables.apiData);
+                    if (success.equals("true")) {
+                        for(int i = 0; i < cartList.length(); i++) {
+                            JSONObject post = (JSONObject) cartList.get(i);
+                            feedAdapter.insertCard(post);
+                        }
+                    } else {
+                        showToast("Loading error");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } finally {
+                    feedAdapter.notifyDataSetChanged();
+                    newsFeedProgressDialog.dismiss();
+                    pullToRefreshLayout.setRefreshing(false);
+                }
+//                try {
+//                    for(int i = 0; i < response.length(); i++) {
+//                        JSONObject post = (JSONObject) response.get(i);
+//                        feedAdapter.insertCard(post);
+//                    }
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                } finally {
+//                    feedAdapter.notifyDataSetChanged();
+//                    newsFeedProgressDialog.dismiss();
+//                    pullToRefreshLayout.setRefreshing(false);
+//                }
             }
 
             @Override

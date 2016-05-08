@@ -52,6 +52,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         Picasso.with(context).load(card.avatarUrl).into(holder.ivUserProfile);
         holder.tvUsername.setText(card.username);
         Picasso.with(context).load(card.cardImageUrl).into(holder.ivCardImage);
+        System.out.println(card.cardImageUrl);
         holder.tvDescription.setText(card.description);
         holder.tsLikesCounter.setText(card.likeNumber);
 
