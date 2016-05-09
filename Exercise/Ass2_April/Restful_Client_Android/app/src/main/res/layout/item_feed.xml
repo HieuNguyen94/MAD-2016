@@ -72,12 +72,12 @@
                 android:id="@+id/btnLike"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:background="@drawable/btn_feed_action"
                 android:src="@drawable/heart_passive"
                 android:scaleType="fitCenter"
                 android:layout_margin="0dp"
                 android:padding="10dp"
-                android:layout_gravity="center_vertical" />
+                android:layout_gravity="center_vertical"
+                android:background="#00ffffff" />
 
             <ImageButton
                 android:id="@+id/btnComments"

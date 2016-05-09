@@ -27,11 +27,17 @@ public class Variables {
     public static String uploadImageApiUrl = "https://api.imgur.com/3/image";
     public static String createPostApiUrl = "http://mad-ass1-2016.herokuapp.com/post/create";
     public static String likePostApiUrl = "https://mad-ass1-2016.herokuapp.com/like/create";
+    public static String dislikePostApiUrl = "http://mad-ass1-2016.herokuapp.com/like/dellike";
+    public static String getPostOfUserApiUrl = "http://mad-ass1-2016.herokuapp.com/post/getuserposts";
+    public static String deletePostApiUrl = "http://mad-ass1-2016.herokuapp.com/post/delpost";
+    public static String updatePostConentApiUrl = "http://mad-ass1-2016.herokuapp.com/post/updatecontent";
     public static String defaultAvatarUrl = "http://www.megaicons.net/static/img/icons_sizes/189/462/256/young-lion-icon.png";
     public static String defaultCardImageUrl = "http://www.livescience.com/images/i/000/076/996/original/walking-nature-150629.jpg?1435603472";
     public static int commentMaxLength = 160;
     public static boolean isFirstLoad = true;
-    public static String currentLoginUsername = "hieu";
+    public static String currentLoginUsername = "nghia";
     public static String dialogMessageAlmostThere = "Almost there";
+    public static String messageOperationFailed = "Operation failed";
     public static int bitmapCompressQuality = 100;
+    public static int activityDescriptionMaxLength = 50;
 }

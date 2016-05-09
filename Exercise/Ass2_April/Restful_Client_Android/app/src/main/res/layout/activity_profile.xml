@@ -150,11 +150,22 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Recent Activities"
-        android:id="@+id/textView5"
+        android:id="@+id/recentActivities"
         android:layout_below="@+id/view"
         android:layout_centerHorizontal="true"
         android:textStyle="bold"
         android:layout_marginTop="5dp"
         android:textColor="#444444" />
+
+    <com.baoyz.swipemenulistview.SwipeMenuListView
+        android:id="@+id/listView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="false"
+        android:dividerHeight="1px"
+        android:divider="#CFD8DC"
+        android:drawSelectorOnTop="true"
+        android:layout_below="@+id/recentActivities" />
 
 </RelativeLayout>

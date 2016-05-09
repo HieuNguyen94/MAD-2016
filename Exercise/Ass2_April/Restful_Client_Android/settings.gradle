@@ -1,1 +1,1 @@
-include ':app', ':library', ':showcase', ':blur-behind', ':circlesimageview', ':dialogcore', ':dialogcommons', ':pullToRefresh'
+include ':app', ':library', ':showcase', ':blur-behind', ':circlesimageview', ':dialogcore', ':dialogcommons', ':pullToRefresh', ':swipemenu'

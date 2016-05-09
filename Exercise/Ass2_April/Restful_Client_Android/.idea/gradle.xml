@@ -18,6 +18,7 @@
             <option value="$PROJECT_DIR$/library" />
             <option value="$PROJECT_DIR$/pullToRefresh" />
             <option value="$PROJECT_DIR$/showcase" />
+            <option value="$PROJECT_DIR$/swipemenu" />
           </set>
         </option>
         <option name="myModules">
@@ -31,6 +32,7 @@
             <option value="$PROJECT_DIR$/library" />
             <option value="$PROJECT_DIR$/pullToRefresh" />
             <option value="$PROJECT_DIR$/showcase" />
+            <option value="$PROJECT_DIR$/swipemenu" />
           </set>
         </option>
       </GradleProjectSettings>

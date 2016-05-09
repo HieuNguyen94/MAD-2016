@@ -225,7 +225,7 @@ public class NewsFeedActivity extends AppCompatActivity {
                 try {
                     for(int i = 0; i < response.length(); i++) {
                         JSONObject post = (JSONObject) response.get(i);
-                        feedAdapter.insertCard(post);
+                        feedAdapter.insertCardJSON(post);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -262,7 +262,7 @@ public class NewsFeedActivity extends AppCompatActivity {
                     if (success.equals("true")) {
                         for(int i = 0; i < cartList.length(); i++) {
                             JSONObject post = (JSONObject) cartList.get(i);
-                            feedAdapter.insertCard(0, post);
+                            feedAdapter.insertCardJSON(post);
                         }
                     } else {
                         Utils.showToast(getApplicationContext(), "Loading error");
@@ -385,8 +385,7 @@ public class NewsFeedActivity extends AppCompatActivity {
         });
     }
 
-    private static String encodeToBase64(Bitmap image, Bitmap.CompressFormat compressFormat, int quality)
-    {
+    private static String encodeToBase64(Bitmap image, Bitmap.CompressFormat compressFormat, int quality) {
         ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
         image.compress(compressFormat, quality, byteArrayOS);
         return Base64.encodeToString(byteArrayOS.toByteArray(), Base64.DEFAULT);
@@ -407,7 +406,7 @@ public class NewsFeedActivity extends AppCompatActivity {
         JSONObject params = new JSONObject();
         StringEntity entity = null;
         try {
-            params.put("username", "nghia"); //TODO change value
+            params.put("username", Variables.currentLoginUsername);
             params.put("content", content);
             params.put("cardimage", imageUrl);
             entity = new StringEntity(params.toString());

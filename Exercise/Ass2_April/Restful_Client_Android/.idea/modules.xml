@@ -11,6 +11,7 @@
       <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" />
       <module fileurl="file://$PROJECT_DIR$/pullToRefresh/pullToRefresh.iml" filepath="$PROJECT_DIR$/pullToRefresh/pullToRefresh.iml" />
       <module fileurl="file://$PROJECT_DIR$/showcase/showcase.iml" filepath="$PROJECT_DIR$/showcase/showcase.iml" />
+      <module fileurl="file://$PROJECT_DIR$/swipemenu/swipemenu.iml" filepath="$PROJECT_DIR$/swipemenu/swipemenu.iml" />
     </modules>
   </component>
 </project>

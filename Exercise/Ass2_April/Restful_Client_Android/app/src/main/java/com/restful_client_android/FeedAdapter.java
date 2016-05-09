@@ -44,7 +44,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         likePostClient = new AsyncHttpClient();
     }
 
-    public void likePost(Context context, String postId, final int originLikeNumber, final TextSwitcher textSwitcher) {
+    public void likePost(final Context context, String postId, final CellFeedViewHolder holder, final FeedCardData card) {
         JSONObject params = new JSONObject();
         StringEntity entity = null;
         try {
@@ -89,10 +89,77 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     String message = response.getString(Variables.apiMessage);
                     if (success.equals("true")) {
                         System.out.println("Like a post successfully");
+                        int originLikeNumber = Integer.parseInt(card.likeNumber);
                         int newLike = (originLikeNumber + 1);
-                        textSwitcher.setText("" + newLike);
+                        holder.tsLikesCounter.setText("" + newLike);
+                        card.likePost = "true";
+                        card.likeNumber = newLike + "";
+                        holder.btnLike.setImageResource(R.drawable.heart_active);
                     } else {
                         System.out.println("Like a post ERROR" + message);
+                        Utils.showToast(context, Variables.messageOperationFailed);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public void dislikePost(final Context context, String postId, final CellFeedViewHolder holder, final FeedCardData card) {
+        JSONObject params = new JSONObject();
+        StringEntity entity = null;
+        try {
+            params.put("postid", postId);
+            params.put("username", Variables.currentLoginUsername);
+            entity = new StringEntity(params.toString());
+        } catch (JSONException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        likePostClient.put(context, Variables.dislikePostApiUrl, entity, "application/json", new JsonHttpResponseHandler(){
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                super.onSuccess(statusCode, headers, responseString);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                System.out.println("Dislike a post failed");
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                super.onSuccess(statusCode, headers, response);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    String success = response.getString(Variables.apiSuccess);
+                    String message = response.getString(Variables.apiMessage);
+                    if (success.equals("true")) {
+                        System.out.println("Dislike a post successfully");
+                        int originLikeNumber = Integer.parseInt(card.likeNumber);
+                        int newLike = (originLikeNumber - 1);
+                        holder.tsLikesCounter.setText("" + newLike);
+                        card.likeNumber = newLike + "";
+                        card.likePost = "false";
+                        holder.btnLike.setImageResource(R.drawable.heart_passive);
+                    } else {
+                        System.out.println("Dislike a post ERROR" + message);
+                        Utils.showToast(context, Variables.messageOperationFailed);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -120,14 +187,23 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         Picasso.with(context).load(card.cardImageUrl).resize(250, 250).centerCrop().into(holder.ivCardImage);
         holder.tvDescription.setText(card.description);
         holder.tsLikesCounter.setText(card.likeNumber);
+        if (card.likePost.equals("true")) {
+            holder.btnLike.setImageResource(R.drawable.heart_active);
+        } else {
+            holder.btnLike.setImageResource(R.drawable.heart_passive);
+        }
 
         //TODO bind event
         ((CellFeedViewHolder) viewHolder).btnLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 //                Toast.makeText(context, "Like", Toast.LENGTH_SHORT).show();
-                Snackbar.make(view, "This feature is not available at the moment", Snackbar.LENGTH_LONG).show();
-                likePost(context, card.postId, Integer.parseInt(card.likeNumber), holder.tsLikesCounter);
+//                Snackbar.make(view, "This feature is not available at the moment", Snackbar.LENGTH_LONG).show();
+                if (card.likePost.equals("true")) { // Dislike handler
+                    dislikePost(context, card.postId, holder, card);
+                } else { // Like handler
+                    likePost(context, card.postId, holder, card);
+                }
             }
         });
         ((CellFeedViewHolder) viewHolder).btnComments.setOnClickListener(new View.OnClickListener() {
@@ -145,6 +221,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 //                Toast.makeText(context, "Profile", Toast.LENGTH_SHORT).show();
 //                Snackbar.make(view, "This feature is not available at the moment", Snackbar.LENGTH_LONG).show();
                 Intent intent = new Intent(activity, ProfileActivity.class);
+                intent.putExtra(Variables.apiUsername, getCardData(position).username);
                 context.startActivity(intent);
             }
         });
@@ -195,7 +272,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         notifyItemInserted(position);
     }
 
-    public void insertCard(int position, JSONObject object) {
+    public void insertCardJSON(int position, JSONObject object) {
         try {
             FeedCardData card = new FeedCardData(
                     object.getString(Variables.apiUserAvatar),
@@ -203,7 +280,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     object.getString(Variables.apiCardImage),
                     object.getString(Variables.apiContent),
                     object.getString(Variables.apiNumberLike),
-                    object.getString("id"));
+                    object.getString("id"),
+                    object.getString("likePost"));
             insertCard(position, card);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -214,7 +292,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         cardDataList.add(data);
     }
 
-    public void insertCard(JSONObject object) {
+    public void insertCardJSON(JSONObject object) {
         try {
             FeedCardData card = new FeedCardData(
                     object.getString(Variables.apiUserAvatar),
@@ -222,7 +300,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     object.getString(Variables.apiCardImage),
                     object.getString(Variables.apiContent),
                     object.getString(Variables.apiNumberLike),
-                    object.getString("id"));
+                    object.getString("id"),
+                    object.getString("likePost"));
             insertCard(card);
         } catch (JSONException e) {
             e.printStackTrace();

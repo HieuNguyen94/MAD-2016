@@ -134,6 +134,7 @@
     <orderEntry type="module" module-name="blur-behind" exported="" />
     <orderEntry type="module" module-name="showcase" exported="" />
     <orderEntry type="module" module-name="circlesimageview" exported="" />
+    <orderEntry type="module" module-name="swipemenu" exported="" />
     <orderEntry type="module" module-name="dialogcore" exported="" />
     <orderEntry type="module" module-name="library" exported="" />
     <orderEntry type="module" module-name="pullToRefresh" exported="" />

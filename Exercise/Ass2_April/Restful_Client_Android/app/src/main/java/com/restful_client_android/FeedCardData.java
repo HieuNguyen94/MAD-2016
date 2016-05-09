@@ -17,9 +17,10 @@ public class FeedCardData {
     public String description;
     public String likeNumber;
     public String postId;
+    public String likePost;
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    FeedCardData(String avatarUrl, String username, String cardImageUrl, String description, String likeNumber, String postId) {
+    FeedCardData(String avatarUrl, String username, String cardImageUrl, String description, String likeNumber, String postId, String likePost) {
         if (avatarUrl.equals("")) {
             this.avatarUrl = Variables.defaultAvatarUrl;
         } else {
@@ -34,5 +35,6 @@ public class FeedCardData {
         this.description = description;
         this.likeNumber = likeNumber;
         this.postId = postId;
+        this.likePost = likePost;
     }
 }
