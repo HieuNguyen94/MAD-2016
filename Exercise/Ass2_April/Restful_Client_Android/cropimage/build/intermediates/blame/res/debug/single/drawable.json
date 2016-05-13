@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/cropimage/build/intermediates/res/merged/debug/drawable/crop__texture.xml",
+        "source": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/cropimage/src/main/res/drawable/crop__texture.xml"
+    },
+    {
+        "merged": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/cropimage/build/intermediates/res/merged/debug/drawable/crop__selectable_background.xml",
+        "source": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/cropimage/src/main/res/drawable/crop__selectable_background.xml"
+    }
+]

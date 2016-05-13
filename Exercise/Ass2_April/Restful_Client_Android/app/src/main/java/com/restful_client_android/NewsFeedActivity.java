@@ -9,15 +9,23 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -26,6 +34,7 @@ import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem;
 import com.baoyz.widget.PullRefreshLayout;
 import com.melnykov.fab.FloatingActionButton;
 import com.loopj.android.http.*;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -56,8 +65,8 @@ public class NewsFeedActivity extends AppCompatActivity {
     private String pictureImagePath = "";
     private PullRefreshLayout pullToRefreshLayout;
     private View positiveAction;
-
-
+    private ImageButton avatarnav;
+    private ImageButton settingnav;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +81,19 @@ public class NewsFeedActivity extends AppCompatActivity {
 //                showProgressDeterminateDialog();
             }
         });
+//        avatarnav = (ImageButton) findViewById(R.id.avatarNav);
+//        avatarnav.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                //TODO
+//                Snackbar.make(view, Variables.message_no_feature, Snackbar.LENGTH_SHORT).show();
+//                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+//                intent.putExtra(Variables.apiUsername, Variables.currentLoginUsername);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+//                startActivity(intent);
+//            }
+//        });
+
         newsFeedProgressDialog = new ProgressDialog(NewsFeedActivity.this, R.style.AppTheme_Dark_Dialog);
         newsFeedProgressDialog.setMessage(Variables.dialogMessageAlmostThere);
         newsFeedProgressDialog.setCanceledOnTouchOutside(false);
@@ -79,6 +101,7 @@ public class NewsFeedActivity extends AppCompatActivity {
         imageUploadClient = new AsyncHttpClient();
         imageUploadClient.addHeader("Authorization", "Client-ID 9806c7ef5d11150"); //TODO
         setupFeed();
+        setActionBar();
         pullToRefreshLayout = (PullRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         pullToRefreshLayout.setRefreshStyle(PullRefreshLayout.STYLE_CIRCLES);
         pullToRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
@@ -253,7 +276,6 @@ public class NewsFeedActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Utils.showToast(getApplicationContext(), "Success");
                 // Firstly remove all cards
                 feedAdapter.removeAllCard();
                 try {
@@ -307,11 +329,9 @@ public class NewsFeedActivity extends AppCompatActivity {
                     @Override
                     public void onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
                         MaterialSimpleListItem item = adapter.getItem(which);
-                        Utils.showToast(getApplicationContext(), item.getContent().toString());
                         if (which == 0) { // Select from gallery
                             dispatchTakePictureGalleryIntent();
                         } else { // Using camera
-//                            dispatchTakePictureIntent();
                             dispatchTakePictureIntent();
                         }
                         selectImageDialog.dismiss();
@@ -385,6 +405,50 @@ public class NewsFeedActivity extends AppCompatActivity {
         });
     }
 
+    private void setActionBar() {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+
+        RelativeLayout actionBarLayout = (RelativeLayout)getLayoutInflater().inflate(R.layout.actionbar_layout, null);
+        ActionBar.LayoutParams params = new ActionBar.LayoutParams(
+                ActionBar.LayoutParams.MATCH_PARENT,
+                ActionBar.LayoutParams.MATCH_PARENT,
+                Gravity.LEFT);
+        actionBarLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rvFeed.smoothScrollToPosition(0);
+            }
+        });
+        avatarnav = (ImageButton)actionBarLayout.findViewById(R.id.avatarNav);
+        Picasso.with(getApplicationContext()).load(Variables.currentLoginUserAvatar).fit().transform(new CircleTransform()).into(avatarnav);
+
+        settingnav = (ImageButton) actionBarLayout.findViewById(R.id.settingNav);
+        settingnav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(NewsFeedActivity.this, LogInActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+
+        avatarnav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                intent.putExtra(Variables.apiUsername, Variables.currentLoginUsername);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(intent);
+            }
+        });
+
+        actionBar.setCustomView(actionBarLayout, params);
+        actionBar.setDisplayHomeAsUpEnabled(false);
+    }
+
     private static String encodeToBase64(Bitmap image, Bitmap.CompressFormat compressFormat, int quality) {
         ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
         image.compress(compressFormat, quality, byteArrayOS);
@@ -431,11 +495,13 @@ public class NewsFeedActivity extends AppCompatActivity {
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
+                Utils.showToast(getApplicationContext(), "Create new post failed");
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
+                Utils.showToast(getApplicationContext(), "Create new post failed");
             }
 
             @Override
@@ -458,6 +524,7 @@ public class NewsFeedActivity extends AppCompatActivity {
                     }
                 } catch (JSONException | UnsupportedEncodingException e) {
                     e.printStackTrace();
+                    Utils.showToast(getApplicationContext(), "Create new post failed");
                 } finally {
                     progressUploadDialog.dismiss();
                 }

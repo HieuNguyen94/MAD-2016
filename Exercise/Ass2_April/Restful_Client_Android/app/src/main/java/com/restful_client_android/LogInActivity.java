@@ -1,6 +1,7 @@
 package com.restful_client_android;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,19 +17,30 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
+
 public class LogInActivity extends AppCompatActivity {
 
-    private final String WS_URL = Utils.WS_LOGIN_URL;
     private EditText usernameET;
     private EditText passwordET;
+    private AsyncHttpClient client;
+    private ProgressDialog newsFeedProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +56,7 @@ public class LogInActivity extends AppCompatActivity {
                     Snackbar.make(getWindow().getDecorView().getRootView(), "All fields are required", Snackbar.LENGTH_SHORT).show();
                     return;
                 }
-                new RequestWebService().execute(WS_URL);
+                login();
             }
         });
         TextView signupTV = (TextView) findViewById(R.id.signup);
@@ -52,10 +64,16 @@ public class LogInActivity extends AppCompatActivity {
         signupTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LogInActivity.this, SignUpActivity.class);
+                Intent intent = new Intent(LogInActivity.this, SignUp.class);
                 startActivity(intent);
+                finish();
             }
         });
+
+        client = new AsyncHttpClient();
+        newsFeedProgressDialog = new ProgressDialog(LogInActivity.this, R.style.AppTheme_Dark_Dialog);
+        newsFeedProgressDialog.setMessage("Logging in");
+        newsFeedProgressDialog.setCanceledOnTouchOutside(false);
     }
 
     @Override
@@ -80,70 +98,76 @@ public class LogInActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private class RequestWebService extends AsyncTask<String, Void, Void> {
-
-        private int result = -1;
-        private String username = usernameET.getText().toString();
-        private String password = passwordET.getText().toString();
-        private ProgressDialog dialog = new ProgressDialog(LogInActivity.this, R.style.AppTheme_Dark_Dialog);
-
-        @Override
-        protected void onPreExecute() {
-            dialog.setMessage("Logging in ...");
-            dialog.show();
+    public void login() {
+        JSONObject params = new JSONObject();
+        StringEntity entity = null;
+        try {
+            params.put("username", usernameET.getText().toString());
+            params.put("password", passwordET.getText().toString());
+            entity = new StringEntity(params.toString());
+        } catch (JSONException | UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
+        newsFeedProgressDialog.show();
+        client.post(getApplicationContext(), Variables.loginApiUrl, entity, "application/json", new JsonHttpResponseHandler(){
 
-        @Override
-        protected Void doInBackground(String... urls) {
-            try {
-                URL url = new URL(urls[0]);
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("POST");
-                urlConnection.setRequestProperty("Content-Type", "application/json");
-                urlConnection.setDoInput(true);
-                urlConnection.connect();
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                super.onSuccess(statusCode, headers, responseString);
+                newsFeedProgressDialog.dismiss();
+                Snackbar.make(getWindow().getDecorView().getRootView(), "Login success", Snackbar.LENGTH_SHORT).show();;
+            }
 
-                JsonObject msgBody = new JsonObject();
-                msgBody.addProperty("username", username);
-                msgBody.addProperty("password", password);
-                Log.e("Body String", msgBody.toString());
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                System.out.println("Login failed");
+                Snackbar.make(getWindow().getDecorView().getRootView(), "Login failed. Please check your Internet connection and try again", Snackbar.LENGTH_SHORT).show();
+                newsFeedProgressDialog.dismiss();
+            }
 
-                OutputStream osRequest = urlConnection.getOutputStream();
-                osRequest.write(msgBody.toString().getBytes());
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                newsFeedProgressDialog.dismiss();
+                Snackbar.make(getWindow().getDecorView().getRootView(), "Login failed", Snackbar.LENGTH_SHORT).show();
+            }
 
-                Log.e("Response code", String.valueOf(urlConnection.getResponseCode()));
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                newsFeedProgressDialog.dismiss();
+                Snackbar.make(getWindow().getDecorView().getRootView(), "Login failed", Snackbar.LENGTH_SHORT).show();
+            }
 
-                if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                    result = 1;
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                super.onSuccess(statusCode, headers, response);
+                newsFeedProgressDialog.dismiss();
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    String success = response.getString(Variables.apiSuccess);
+                    String message = response.getString(Variables.apiMessage);
+                    String data = response.getString("data");
+                    if (success.equals("true")) {
+                        Variables.currentLoginUserAvatar = data;
+                        Variables.currentLoginUsername = usernameET.getText().toString();
+                        Intent intent = new Intent(LogInActivity.this, NewsFeedActivity.class);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        System.out.println("Login ERROR" + message);
+                        Utils.showToast(getApplicationContext(), Variables.messageOperationFailed);
+                        Snackbar.make(getWindow().getDecorView().getRootView(), message, Snackbar.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } finally {
+                    newsFeedProgressDialog.dismiss();
                 }
-                else if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED){
-                    result = 0;
-                }
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (ProtocolException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
             }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            dialog.dismiss();
-            if (result == 1){
-                Log.e("result", "1");
-                Toast.makeText(LogInActivity.this, "Login successfully", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(LogInActivity.this, NewsFeedActivity.class);
-                startActivity(intent);
-            }
-            else if (result ==0){
-                Toast.makeText(LogInActivity.this, "Wrong username or password", Toast.LENGTH_LONG).show();
-            }
-
-
-        }
+        });
     }
 }

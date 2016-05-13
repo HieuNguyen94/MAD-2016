@@ -65,16 +65,19 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 System.out.println("Like a post failed");
+                Utils.showToast(context, "Like post failed");
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
+                Utils.showToast(context, "Like post failed");
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
+                Utils.showToast(context, "Like post failed");
             }
 
             @Override
@@ -101,6 +104,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    Utils.showToast(context, "Like post failed");
                 }
             }
         });
@@ -127,16 +131,19 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 System.out.println("Dislike a post failed");
+                Utils.showToast(context, "Delike post failed");
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
+                Utils.showToast(context, "Delike post failed");
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
+                Utils.showToast(context, "Delike post failed");
             }
 
             @Override
@@ -163,6 +170,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    Utils.showToast(context, "Delike post failed");
                 }
             }
         });
@@ -197,8 +205,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         ((CellFeedViewHolder) viewHolder).btnLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Toast.makeText(context, "Like", Toast.LENGTH_SHORT).show();
-//                Snackbar.make(view, "This feature is not available at the moment", Snackbar.LENGTH_LONG).show();
                 if (card.likePost.equals("true")) { // Dislike handler
                     dislikePost(context, card.postId, holder, card);
                 } else { // Like handler
@@ -209,17 +215,16 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         ((CellFeedViewHolder) viewHolder).btnComments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Toast.makeText(context, "Comment", Toast.LENGTH_SHORT).show();
-//                Snackbar.make(view, "This feature is not available at the moment", Snackbar.LENGTH_LONG).show();
                 Intent intent = new Intent(activity, PostDetails.class);
+                intent.putExtra("postId", card.postId);
+                intent.putExtra("cardImageUrl", card.cardImageUrl);
+                intent.putExtra("description", card.description);
                 context.startActivity(intent);
             }
         });
         ((CellFeedViewHolder) viewHolder).ivUserProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Toast.makeText(context, "Profile", Toast.LENGTH_SHORT).show();
-//                Snackbar.make(view, "This feature is not available at the moment", Snackbar.LENGTH_LONG).show();
                 Intent intent = new Intent(activity, ProfileActivity.class);
                 intent.putExtra(Variables.apiUsername, getCardData(position).username);
                 context.startActivity(intent);
@@ -228,8 +233,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         ((CellFeedViewHolder) viewHolder).tvUsername.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Toast.makeText(context, "Profile", Toast.LENGTH_SHORT).show();
-//                Snackbar.make(view, "This feature is not available at the moment", Snackbar.LENGTH_LONG).show();
                 Intent intent = new Intent(activity, ProfileActivity.class);
                 intent.putExtra(Variables.apiUsername, getCardData(position).username);
                 context.startActivity(intent);

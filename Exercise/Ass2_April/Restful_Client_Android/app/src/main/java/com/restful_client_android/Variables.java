@@ -6,6 +6,7 @@ package com.restful_client_android;
 public class Variables {
     public static String cardImageUrl = "cardImageUrl";
     public static String message_no_feature = "This feature is not available at the moment.";
+    public static String message_all_fealds_are_required = "All fields are required";
     public static String apiUsername = "userName";
     public static String apiPageIndex = "pageIndex";
     public static String apiPageSize = "pageSize";
@@ -31,11 +32,18 @@ public class Variables {
     public static String getPostOfUserApiUrl = "http://mad-ass1-2016.herokuapp.com/post/getuserposts";
     public static String deletePostApiUrl = "http://mad-ass1-2016.herokuapp.com/post/delpost";
     public static String updatePostConentApiUrl = "http://mad-ass1-2016.herokuapp.com/post/updatecontent";
+    public static String getCommentApiUrl = "http://mad-ass1-2016.herokuapp.com/comment/getcommentsatpost";
     public static String defaultAvatarUrl = "http://www.megaicons.net/static/img/icons_sizes/189/462/256/young-lion-icon.png";
+    public static String postCommentApiUrl = "http://mad-ass1-2016.herokuapp.com/comment/create";
+    public static String loginApiUrl = "http://mad-ass1-2016.herokuapp.com/user/login";
+    public static String updateUserApiUrl = "http://mad-ass1-2016.herokuapp.com/user/updateinfo";
+    public static String deleteCommentApiUrl = "http://mad-ass1-2016.herokuapp.com/comment/delcomment";
     public static String defaultCardImageUrl = "http://www.livescience.com/images/i/000/076/996/original/walking-nature-150629.jpg?1435603472";
+    public static String signupApiUrl = "http://mad-ass1-2016.herokuapp.com/user/create";
     public static int commentMaxLength = 160;
     public static boolean isFirstLoad = true;
-    public static String currentLoginUsername = "nghia";
+    public static String currentLoginUsername = "nghia"; //TODO change
+    public static String currentLoginUserAvatar = defaultAvatarUrl; //TODO change
     public static String dialogMessageAlmostThere = "Almost there";
     public static String messageOperationFailed = "Operation failed";
     public static int bitmapCompressQuality = 100;

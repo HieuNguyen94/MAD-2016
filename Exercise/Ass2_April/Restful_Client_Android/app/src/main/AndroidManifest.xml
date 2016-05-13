@@ -3,8 +3,11 @@
     package="com.restful_client_android">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-feature android:name="android.hardware.camera"
+
+    <uses-feature
+        android:name="android.hardware.camera"
         android:required="true" />
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
@@ -17,40 +20,22 @@
             android:name=".LogInActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.Dark">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
-        </activity>
-        <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.MainTheme">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
-        </activity>
-        <activity
-            android:name=".UserDetailActivity"
-            android:label="@string/app_name" />
-        <activity
-            android:name=".SignUpActivity"
-            android:label="@string/app_name" />
-        <activity
-            android:name=".NewsFeedActivity"
-            android:theme="@style/AppTheme.MainTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".NewsFeedActivity"
+            android:theme="@style/AppTheme.Signup">
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
         <activity
             android:name=".ViewImageActivity"
@@ -61,7 +46,26 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".PostDetails"
-            android:theme="@style/AppTheme.MainTheme" />
+            android:theme="@style/AppTheme.Signup" />
+        <activity
+            android:name=".SignUp"
+            android:label="Sign up"
+            android:theme="@style/AppTheme.Signup">
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+        </activity>
+        <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
+        <activity
+            android:parentActivityName=".ProfileActivity"
+            android:label="Edit Profile"
+            android:theme="@style/AppTheme.Signup"
+            android:name=".EditProfile">
+        </activity>
     </application>
 
 </manifest>

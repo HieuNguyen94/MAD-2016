@@ -18,6 +18,8 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,7 +65,15 @@ public class ProfileActivity extends AppCompatActivity {
     private View positiveAction;
     AsyncHttpClient imageUploadClient;
     private MaterialDialog progressUploadDialog;
+    private String password;
 
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+        overridePendingTransition(0, 0); // remove exit animation
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +90,11 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "This feature is not available at the moment", Snackbar.LENGTH_SHORT).show();
+                Intent intent = new Intent(ProfileActivity.this, EditProfile.class);
+                intent.putExtra("email", tv_email.getText().toString());
+                intent.putExtra("address", tv_address.getText().toString());
+                intent.putExtra("password", password);
+                startActivity(intent);
             }
         });
         if (Utils.isCurrentUser(username)) {
@@ -104,7 +119,7 @@ public class ProfileActivity extends AppCompatActivity {
                     public void onBlurComplete() {
                         Intent intent = new Intent(getApplicationContext(), ViewImageActivity.class);
                         intent.putExtra(Variables.cardImageUrl, activityList.get(i).imageUrl);
-                        intent.putExtra(Variables.apiContent, activityList.get(i).description);
+                        intent.putExtra(Variables.apiContent, activityList.get(i).fullDescription);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         getApplicationContext().startActivity(intent);
@@ -196,20 +211,6 @@ public class ProfileActivity extends AppCompatActivity {
             public void onMenuClose(int position) {
             }
         });
-
-        // other setting
-//		listView.setCloseInterpolator(new BounceInterpolator());
-
-        // test item long click
-        activityListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view,
-                                           int position, long id) {
-                Toast.makeText(getApplicationContext(), position + " long click", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        });
     }
 
     private void getUserInfo(String username) {
@@ -274,6 +275,7 @@ public class ProfileActivity extends AppCompatActivity {
             String email = data.getString(Variables.apiEmail);
             String address = data.getString(Variables.apiAddress);
             String avatarUrl = data.getString("avatar");
+            password = data.getString("password");
             if (!email.equals("")) {
                 tv_email.setText(email);
             }
@@ -385,16 +387,19 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 System.out.println("Delete activities failed");
+                Utils.showToast(getApplicationContext(), "Delete Post failed");
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
+                Utils.showToast(getApplicationContext(), "Delete Post failed");
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
+                Utils.showToast(getApplicationContext(), "Delete Post failed");
             }
 
             @Override
@@ -408,7 +413,7 @@ public class ProfileActivity extends AppCompatActivity {
                     String success = response.getString(Variables.apiSuccess);
                     String message = response.getString(Variables.apiMessage);
                     if (success.equals("true")) {
-                        Utils.showToast(getApplicationContext(), "Delete activity success");
+                        Snackbar.make(getWindow().getDecorView().getRootView(), "Delete post successfully", Snackbar.LENGTH_SHORT).show();
                         activityList.remove(position);
                         activityAdapter.notifyDataSetChanged();
                     } else {
@@ -425,7 +430,7 @@ public class ProfileActivity extends AppCompatActivity {
     public void showEditPostPopup(final ActivityData activity) {
         EditText et_description;
         MaterialDialog newPostDialog = new MaterialDialog.Builder(this)
-                .title("New Post")
+                .title("Edit Post")
                 .titleColor(Color.WHITE)
                 .customView(R.layout.new_post_dialog, true)
                 .positiveText("SAVE")
@@ -446,7 +451,7 @@ public class ProfileActivity extends AppCompatActivity {
         et_description = (EditText)newPostDialog.getCustomView().findViewById(R.id.et_new_post_desc);
         ImageView iv_newPostImage = (ImageView) newPostDialog.getCustomView().findViewById(R.id.iv_newPostImage);
         Picasso.with(getApplicationContext()).load(activity.imageUrl).into(iv_newPostImage);
-        et_description.setText(activity.description);
+        et_description.setText(activity.fullDescription);
 //        iv_newPostImage.setImageBitmap(bitmap);
         positiveAction = newPostDialog.getActionButton(DialogAction.POSITIVE);
         et_description.addTextChangedListener(new TextWatcher() {
@@ -467,12 +472,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         newPostDialog.show();
         positiveAction.setEnabled(true); // disabled by default
-    }
-
-    private static String encodeToBase64(Bitmap image, Bitmap.CompressFormat compressFormat, int quality) {
-        ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
-        image.compress(compressFormat, quality, byteArrayOS);
-        return Base64.encodeToString(byteArrayOS.toByteArray(), Base64.DEFAULT);
     }
 
     private void showIndeterminateProgressDialog(boolean horizontal) {
@@ -531,7 +530,7 @@ public class ProfileActivity extends AppCompatActivity {
                     String success = response.getString(Variables.apiSuccess);
                     String message = response.getString(Variables.apiMessage);
                     if (success.equals("true")) {
-                        Utils.showToast(getApplicationContext(), "Update activity success");
+                        Snackbar.make(getWindow().getDecorView().getRootView(), "Update post successfully", Snackbar.LENGTH_SHORT).show();
                         activityList.clear();
                         getActivityList(username);
                         activityAdapter.notifyDataSetChanged();
@@ -568,16 +567,19 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 System.out.println("Get activities failed");
+                Utils.showToast(getApplicationContext(), "Get posts failed");
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
+                Utils.showToast(getApplicationContext(), "Get posts failed");
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
+                Utils.showToast(getApplicationContext(), "Get posts failed");
             }
 
             @Override
@@ -592,7 +594,6 @@ public class ProfileActivity extends AppCompatActivity {
                     String message = response.getString(Variables.apiMessage);
                     JSONArray activityList = response.getJSONArray(Variables.apiData);
                     if (success.equals("true")) {
-                        Utils.showToast(getApplicationContext(), "Get activity success");
                         for(int i = 0; i < activityList.length(); i++) {
                             JSONObject post = (JSONObject) activityList.get(i);
                             activityAdapter.insertActivityJSON(post);
@@ -604,6 +605,7 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    Utils.showToast(getApplicationContext(), "Get posts failed");
                 }
             }
         });
@@ -613,6 +615,7 @@ public class ProfileActivity extends AppCompatActivity {
         public String postId;
         public String imageUrl;
         public String description;
+        public String fullDescription;
 
         public ActivityData(String postId, String url, String desc) {
             this.postId = postId;
@@ -621,6 +624,7 @@ public class ProfileActivity extends AppCompatActivity {
             } else {
                 this.imageUrl = url;
             }
+            this.fullDescription = desc;
             if (desc.length() > Variables.activityDescriptionMaxLength) {
                 this.description = desc.substring(0, Variables.activityDescriptionMaxLength) + "...";
             } else {

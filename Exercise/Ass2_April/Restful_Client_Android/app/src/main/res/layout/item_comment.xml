@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="top"
+    android:background="@drawable/btn_feed_action">
+
+    <ImageView
+        android:id="@+id/userAvatarComment"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="center"
+        android:src="@drawable/avatar" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="20dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:paddingRight="5dp"
+        android:gravity="left"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/userNameComment"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|center"
+            android:text="Username"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:textColor="#1D7016"
+            android:textAlignment="textStart" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="date"
+            android:id="@+id/dateComment"
+            android:textSize="10dp"
+            android:textColor="#9e9e9e" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="commentcommentcommentcommentcommentcomment"
+            android:id="@+id/contentComment"
+            android:textSize="15dp"
+            android:textColor="#4e4e4e" />
+    </LinearLayout>
+
+    <ImageButton
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:id="@+id/deleteButtonComment"
+        android:layout_gravity="center"
+        android:background="@drawable/btn_feed_action"
+        android:layout_marginRight="10dp"
+        android:src="@drawable/delete_comment"
+        android:scaleType="fitCenter" />
+</LinearLayout>

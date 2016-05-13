@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/cropimage/build/intermediates/res/merged/release/drawable-xhdpi-v4/crop__tile.png",
+        "source": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/cropimage/src/main/res/drawable-xhdpi/crop__tile.png"
+    },
+    {
+        "merged": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/cropimage/build/intermediates/res/merged/release/drawable-xhdpi-v4/crop__divider.9.png",
+        "source": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/cropimage/src/main/res/drawable-xhdpi/crop__divider.9.png"
+    },
+    {
+        "merged": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/cropimage/build/intermediates/res/merged/release/drawable-xhdpi-v4/crop__ic_done.png",
+        "source": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/cropimage/src/main/res/drawable-xhdpi/crop__ic_done.png"
+    },
+    {
+        "merged": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/cropimage/build/intermediates/res/merged/release/drawable-xhdpi-v4/crop__ic_cancel.png",
+        "source": "/home/hieunguyen/AndroidStudioProjects/MAD-2016/Exercise/Ass2_April/Restful_Client_Android/cropimage/src/main/res/drawable-xhdpi/crop__ic_cancel.png"
+    }
+]

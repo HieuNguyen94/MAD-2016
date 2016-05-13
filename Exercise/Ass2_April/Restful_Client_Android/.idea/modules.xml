@@ -6,9 +6,12 @@
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/blur-behind/blur-behind.iml" filepath="$PROJECT_DIR$/blur-behind/blur-behind.iml" />
       <module fileurl="file://$PROJECT_DIR$/circlesimageview/circlesimageview.iml" filepath="$PROJECT_DIR$/circlesimageview/circlesimageview.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cropimage/cropimage.iml" filepath="$PROJECT_DIR$/cropimage/cropimage.iml" />
       <module fileurl="file://$PROJECT_DIR$/dialogcommons/dialogcommons.iml" filepath="$PROJECT_DIR$/dialogcommons/dialogcommons.iml" />
       <module fileurl="file://$PROJECT_DIR$/dialogcore/dialogcore.iml" filepath="$PROJECT_DIR$/dialogcore/dialogcore.iml" />
+      <module fileurl="file://$PROJECT_DIR$/guillotine/guillotine.iml" filepath="$PROJECT_DIR$/guillotine/guillotine.iml" />
       <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/processbutton/processbutton.iml" filepath="$PROJECT_DIR$/processbutton/processbutton.iml" />
       <module fileurl="file://$PROJECT_DIR$/pullToRefresh/pullToRefresh.iml" filepath="$PROJECT_DIR$/pullToRefresh/pullToRefresh.iml" />
       <module fileurl="file://$PROJECT_DIR$/showcase/showcase.iml" filepath="$PROJECT_DIR$/showcase/showcase.iml" />
       <module fileurl="file://$PROJECT_DIR$/swipemenu/swipemenu.iml" filepath="$PROJECT_DIR$/swipemenu/swipemenu.iml" />
