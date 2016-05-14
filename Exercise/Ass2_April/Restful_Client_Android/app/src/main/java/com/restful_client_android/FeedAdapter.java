@@ -195,6 +195,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         Picasso.with(context).load(card.cardImageUrl).resize(250, 250).centerCrop().into(holder.ivCardImage);
         holder.tvDescription.setText(card.description);
         holder.tsLikesCounter.setText(card.likeNumber);
+        holder.tsCommentCounter.setText(card.commentNumber);
         if (card.likePost.equals("true")) {
             holder.btnLike.setImageResource(R.drawable.heart_active);
         } else {
@@ -284,7 +285,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     object.getString(Variables.apiContent),
                     object.getString(Variables.apiNumberLike),
                     object.getString("id"),
-                    object.getString("likePost"));
+                    object.getString("likePost"),
+                    object.getString("numComments"));
             insertCard(position, card);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -304,7 +306,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     object.getString(Variables.apiContent),
                     object.getString(Variables.apiNumberLike),
                     object.getString("id"),
-                    object.getString("likePost"));
+                    object.getString("likePost"),
+                    object.getString("numComments"));
             insertCard(card);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -336,6 +339,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         ImageButton btnLike;
         ImageButton btnMore;
         TextSwitcher tsLikesCounter;
+        TextSwitcher tsCommentCounter;
 //        FrameLayout vImageRoot;
 
         public CellFeedViewHolder(View view) {
@@ -347,9 +351,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             tvDescription = (TextView) view.findViewById(R.id.tvDescription);
             btnComments = (ImageButton) view.findViewById(R.id.btnComments);
             btnLike = (ImageButton) view.findViewById(R.id.btnLike);
-            btnMore = (ImageButton) view.findViewById(R.id.btnMore);
             tsLikesCounter = (TextSwitcher) view.findViewById(R.id.tsLikesCounter);
-//            vImageRoot = (FrameLayout) view.findViewById(R.id.vImageRoot);
+            tsCommentCounter = (TextSwitcher) view.findViewById(R.id.tsCommentCounter);
         }
     }
 }

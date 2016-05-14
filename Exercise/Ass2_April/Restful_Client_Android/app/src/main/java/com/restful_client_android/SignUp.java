@@ -2,6 +2,7 @@ package com.restful_client_android;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
@@ -187,6 +188,13 @@ public class SignUp extends AppCompatActivity {
                         btnSingup.setProgress(100);
                         Variables.currentLoginUsername = et_username.getText().toString();
                         Variables.currentLoginUserAvatar = url;
+
+                        SharedPreferences settings = getSharedPreferences("Login", 0);
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.putString("username", Variables.currentLoginUsername);
+                        editor.putString("avatar", Variables.currentLoginUserAvatar);
+                        editor.commit();
+
                         Intent intent = new Intent(SignUp.this, NewsFeedActivity.class);
                         startActivity(intent);
                         finish();

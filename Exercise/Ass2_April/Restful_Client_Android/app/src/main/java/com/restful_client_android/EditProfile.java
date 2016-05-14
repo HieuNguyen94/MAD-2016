@@ -2,6 +2,7 @@ package com.restful_client_android;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
@@ -15,14 +16,20 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem;
 import com.dd.processbutton.iml.ActionProcessButton;
+import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.Base64;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -48,7 +55,7 @@ public class EditProfile extends AppCompatActivity {
     static final int PICK_IMAGE_CAMERY_REQUEST = 1;
     private int PICK_IMAGE_GALLERY_REQUEST = 2;
     private String pictureImagePath = "";
-    private EditText et_username;
+    private TextView et_username;
     private EditText et_email;
     private EditText et_address;
     private EditText et_password;
@@ -58,6 +65,7 @@ public class EditProfile extends AppCompatActivity {
     private MaterialDialog selectImageDialog;
     AsyncHttpClient imageUploadClient;
     private Bitmap avatarBitmap;
+    private String originAvatarUrl;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -75,11 +83,13 @@ public class EditProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        et_username = (EditText) findViewById(R.id.editUsername);
+        et_username = (TextView) findViewById(R.id.editUsername);
+
         et_email = (EditText) findViewById(R.id.editEmail);
         et_address = (EditText) findViewById(R.id.editAddress);
         et_password = (EditText) findViewById(R.id.editPassword);
         ib_avatar = (CircleImageView) findViewById(R.id.avatarEditProfile);
+        ib_avatar.setImageDrawable(null);
         ib_avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,12 +104,13 @@ public class EditProfile extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (checkingMissingInfo()) {
+                    Variables.refreshFlag = true;
                     btnSave.setProgress(50);
                     enableInput(false);
                     if (avatarBitmap != null) {
                         uploadImage(avatarBitmap);
                     } else {
-                        saveChanges(Variables.defaultAvatarUrl);
+                        saveChanges(originAvatarUrl);
                     }
                 }
             }
@@ -109,6 +120,45 @@ public class EditProfile extends AppCompatActivity {
 
         loadInfo();
         resetSaveButton();
+        settingShowcase();
+    }
+
+    private void settingShowcase() {
+        SharedPreferences settings = getSharedPreferences("Showcase", 0);
+        if (settings.getBoolean(Variables.editShowcase, true)) {
+            ViewTarget imageTarget = new ViewTarget(R.id.avatarEditProfile, this);
+            ShowcaseView showcase = new ShowcaseView.Builder(this)
+                    .setTarget(imageTarget)
+                    .setContentTitle(Variables.showcaseTitle)
+                    .withMaterialShowcase()
+                    .setStyle(R.style.CustomShowcaseTheme)
+                    .setContentText("Tap here to change your avatar")
+                    .build();
+            showcase.setOnShowcaseEventListener(new OnShowcaseEventListener() {
+                @Override
+                public void onShowcaseViewHide(ShowcaseView showcaseView) {
+                    SharedPreferences settings = getSharedPreferences("Showcase", 0);
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putBoolean(Variables.editShowcase, false);
+                    editor.commit();
+                }
+
+                @Override
+                public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+
+                }
+
+                @Override
+                public void onShowcaseViewShow(ShowcaseView showcaseView) {
+
+                }
+
+                @Override
+                public void onShowcaseViewTouchBlocked(MotionEvent motionEvent) {
+
+                }
+            });
+        }
     }
 
     @Override
@@ -136,6 +186,7 @@ public class EditProfile extends AppCompatActivity {
 
     private void loadInfo() {
         Intent intent = getIntent();
+        originAvatarUrl = Variables.currentLoginUserAvatar;
         Picasso.with(getApplicationContext()).load(Variables.currentLoginUserAvatar).fit().transform(new CircleTransform()).into(ib_avatar);
         et_username.setText(Variables.currentLoginUsername);
         et_email.setText(intent.getStringExtra("email"));
@@ -145,8 +196,6 @@ public class EditProfile extends AppCompatActivity {
 
     private void handleCrop(int resultCode, Intent result) {
         if (resultCode == RESULT_OK) {
-            Toast.makeText(this, "Result ok " + Crop.getOutput(result), Toast.LENGTH_SHORT).show();
-//            Picasso.with(getApplicationContext()).load(Crop.getOutput(result)).fit().transform(new CircleTransform()).into(ib_avatar);
             ib_avatar.setImageURI(Crop.getOutput(result));
             try {
                 avatarBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), Crop.getOutput(result));
@@ -237,17 +286,20 @@ public class EditProfile extends AppCompatActivity {
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
                 Snackbar.make(getWindow().getDecorView().getRootView(), "Update Userinfo failed", Snackbar.LENGTH_SHORT).show();
+                btnSave.setProgress(-1);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
                 Snackbar.make(getWindow().getDecorView().getRootView(), "Update Userinfo failed", Snackbar.LENGTH_SHORT).show();
+                btnSave.setProgress(-1);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 Snackbar.make(getWindow().getDecorView().getRootView(), "Update Userinfo failed", Snackbar.LENGTH_SHORT).show();
+                btnSave.setProgress(-1);
                 btnSave.setProgress(-1);
                 enableInput(true);
             }
@@ -358,12 +410,16 @@ public class EditProfile extends AppCompatActivity {
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
                 Snackbar.make(getWindow().getDecorView().getRootView(), "Upload image failed", Snackbar.LENGTH_SHORT).show();
+                btnSave.setProgress(-1);
+                enableInput(true);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
                 Snackbar.make(getWindow().getDecorView().getRootView(), "Upload image failed", Snackbar.LENGTH_SHORT).show();
+                btnSave.setProgress(-1);
+                enableInput(true);
             }
 
             @Override
@@ -382,8 +438,15 @@ public class EditProfile extends AppCompatActivity {
                     if (success.equals("true")) {
                         System.out.println("url " + data.getString(Variables.apiLink));
                         saveChanges(data.getString(Variables.apiLink));
+                        Variables.currentLoginUserAvatar = data.getString(Variables.apiLink);
+                        SharedPreferences settings = getSharedPreferences("Login", 0);
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.putString("avatar", Variables.currentLoginUserAvatar);
+                        editor.commit();
                     } else {
                         Snackbar.make(getWindow().getDecorView().getRootView(), "Upload image failed", Snackbar.LENGTH_SHORT).show();
+                        btnSave.setProgress(-1);
+                        enableInput(true);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

@@ -1,7 +1,9 @@
 package com.restful_client_android;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -9,29 +11,31 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListItem;
 import com.baoyz.widget.PullRefreshLayout;
+import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.SimpleShowcaseEventListener;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.melnykov.fab.FloatingActionButton;
 import com.loopj.android.http.*;
 import com.squareup.picasso.Picasso;
@@ -78,21 +82,8 @@ public class NewsFeedActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 showSelectImageDialog();
-//                showProgressDeterminateDialog();
             }
         });
-//        avatarnav = (ImageButton) findViewById(R.id.avatarNav);
-//        avatarnav.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                //TODO
-//                Snackbar.make(view, Variables.message_no_feature, Snackbar.LENGTH_SHORT).show();
-//                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
-//                intent.putExtra(Variables.apiUsername, Variables.currentLoginUsername);
-//                intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-//                startActivity(intent);
-//            }
-//        });
 
         newsFeedProgressDialog = new ProgressDialog(NewsFeedActivity.this, R.style.AppTheme_Dark_Dialog);
         newsFeedProgressDialog.setMessage(Variables.dialogMessageAlmostThere);
@@ -115,6 +106,59 @@ public class NewsFeedActivity extends AppCompatActivity {
             }
 
         });
+        settingShowcase();
+    }
+
+    @Override
+    protected void onResume() {
+        if (Variables.refreshFlag) {
+            avatarnav.setImageDrawable(null);
+            Picasso.with(getApplicationContext()).load(Variables.currentLoginUserAvatar).fit().transform(new CircleTransform()).into(avatarnav);
+            Variables.refreshFlag = false;
+        }
+        super.onResume();
+    }
+
+    private void settingShowcase() {
+        SharedPreferences settings = getSharedPreferences("Showcase", 0);
+        if (settings.getBoolean(Variables.newsFeedShowcase, true)) {
+            ViewTarget creatPostTarget = new ViewTarget(R.id.fabnewPost, this);
+            ShowcaseView showcase = new ShowcaseView.Builder(this)
+                    .setTarget(creatPostTarget)
+                    .setContentTitle(Variables.showcaseTitle)
+                    .setStyle(R.style.CustomShowcaseTheme)
+                    .withMaterialShowcase()
+                    .setContentText("Share with us your precious moments in life. Let the world know how wonderful they are!")
+                    .build();
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            showcase.setButtonPosition(params);
+            showcase.setOnShowcaseEventListener(new OnShowcaseEventListener() {
+                @Override
+                public void onShowcaseViewHide(ShowcaseView showcaseView) {
+                    SharedPreferences settings = getSharedPreferences("Showcase", 0);
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putBoolean(Variables.newsFeedShowcase, false);
+                    editor.commit();
+                }
+
+                @Override
+                public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+
+                }
+
+                @Override
+                public void onShowcaseViewShow(ShowcaseView showcaseView) {
+
+                }
+
+                @Override
+                public void onShowcaseViewTouchBlocked(MotionEvent motionEvent) {
+
+                }
+            });
+        }
     }
 
     private void dispatchTakePictureGalleryIntent() {
@@ -424,12 +468,20 @@ public class NewsFeedActivity extends AppCompatActivity {
         avatarnav = (ImageButton)actionBarLayout.findViewById(R.id.avatarNav);
         Picasso.with(getApplicationContext()).load(Variables.currentLoginUserAvatar).fit().transform(new CircleTransform()).into(avatarnav);
 
-        settingnav = (ImageButton) actionBarLayout.findViewById(R.id.settingNav);
+        settingnav = (ImageButton) actionBarLayout.findViewById(R.id.logoutNav);
         settingnav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SharedPreferences settings = getSharedPreferences("Login", 0);
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putString("username", "");
+                editor.putString("avatar", "");
+                editor.commit();
+
                 Intent intent = new Intent(NewsFeedActivity.this, LogInActivity.class);
                 startActivity(intent);
+                Variables.currentLoginUserAvatar = "";
+                Variables.currentLoginUsername = "";
                 finish();
             }
         });

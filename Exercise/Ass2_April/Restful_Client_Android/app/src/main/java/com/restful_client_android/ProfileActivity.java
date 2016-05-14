@@ -1,10 +1,14 @@
 package com.restful_client_android;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +16,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -32,6 +37,9 @@ import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.faradaj.blurbehind.BlurBehind;
 import com.faradaj.blurbehind.OnBlurCompleteListener;
+import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.Base64;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -44,6 +52,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
@@ -75,6 +84,63 @@ public class ProfileActivity extends AppCompatActivity {
         overridePendingTransition(0, 0); // remove exit animation
     }
 
+    @Override
+    protected void onResume() {
+        if (Variables.refreshFlag) {
+            getUserInfo(Variables.currentLoginUsername);
+        }
+        super.onResume();
+    }
+
+    private void settingShowcase() {
+        SharedPreferences settings = getSharedPreferences("Showcase", 0);
+        if (settings.getBoolean(Variables.profileShowcase, true)) {
+            ViewTarget editProfileTarget = new ViewTarget(R.id.ib_EditProfile, this);
+            ShowcaseView showcase = new ShowcaseView.Builder(this)
+                    .setTarget(editProfileTarget)
+                    .setContentTitle(Variables.showcaseTitle)
+                    .withMaterialShowcase()
+                    .setStyle(R.style.CustomShowcaseTheme)
+                    .setContentText("Don't forget to update your profile regularly")
+                    .build();
+            final Activity that = this;
+            showcase.setOnShowcaseEventListener(new OnShowcaseEventListener() {
+                @Override
+                public void onShowcaseViewHide(ShowcaseView showcaseView) {
+                    ViewTarget swipe = new ViewTarget(R.id.recentActivities, that);
+                    new ShowcaseView.Builder(that)
+                            .setTarget(swipe)
+                            .setContentTitle(Variables.showcaseTitle)
+                            .withMaterialShowcase()
+                            .setStyle(R.style.CustomShowcaseTheme)
+                            .setContentText("Swipe left to show more actions")
+                            .build();
+
+                    SharedPreferences settings = getSharedPreferences("Showcase", 0);
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putBoolean(Variables.profileShowcase, false);
+                    editor.commit();
+                }
+
+                @Override
+                public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+
+                }
+
+                @Override
+                public void onShowcaseViewShow(ShowcaseView showcaseView) {
+
+                }
+
+                @Override
+                public void onShowcaseViewTouchBlocked(MotionEvent motionEvent) {
+
+                }
+            });
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,6 +174,10 @@ public class ProfileActivity extends AppCompatActivity {
         imageUploadClient.addHeader("Authorization", "Client-ID 9806c7ef5d11150"); //TODO
         tv_username.setText(username);
         getUserInfo(username);
+
+        if (Objects.equals(username, Variables.currentLoginUsername)) {
+            settingShowcase();
+        }
 
         activityList = new ArrayList<ActivityData>();
         activityListView = (SwipeMenuListView) findViewById(R.id.listView);
@@ -285,6 +355,15 @@ public class ProfileActivity extends AppCompatActivity {
             if (!avatarUrl.equals("")) {
                 Picasso.with(getApplicationContext()).load(avatarUrl).into(iv_avatar);
             }
+
+            SharedPreferences settings = getSharedPreferences("Login", 0);
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putString("avatar", avatarUrl);
+            if (avatarUrl != Variables.defaultAvatarUrl) {
+                Variables.defaultAvatarUrl = avatarUrl;
+                Variables.refreshFlag = true;
+            }
+            editor.commit();
         } catch (JSONException e) {
             e.printStackTrace();
         }

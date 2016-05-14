@@ -42,10 +42,18 @@ public class Variables {
     public static String signupApiUrl = "http://mad-ass1-2016.herokuapp.com/user/create";
     public static int commentMaxLength = 160;
     public static boolean isFirstLoad = true;
-    public static String currentLoginUsername = "nghia"; //TODO change
-    public static String currentLoginUserAvatar = defaultAvatarUrl; //TODO change
+    public static String currentLoginUsername = "";
+    public static String currentLoginUserAvatar = "";
     public static String dialogMessageAlmostThere = "Almost there";
     public static String messageOperationFailed = "Operation failed";
     public static int bitmapCompressQuality = 100;
     public static int activityDescriptionMaxLength = 50;
+    public static int showtimeNumber = 10;
+    public static boolean showcaseNewfeed = true;
+    public static String showcaseTitle = "Do you know";
+    public static String loginShowcase = "loginShowcase";
+    public static String newsFeedShowcase = "newsFeedShowcase";
+    public static String profileShowcase = "profileShowcase";
+    public static String editShowcase = "editShowcase";
+    public static boolean refreshFlag = false;
 }
